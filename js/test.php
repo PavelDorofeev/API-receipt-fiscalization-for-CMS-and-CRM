@@ -52,52 +52,13 @@
 </style>
 
 
-<script type="text/javascript">
-/*
-    var webSocket = $.simpleWebSocket({ 
-		url: 'ws://localhost:33333/',
-		timeout: 20000,	
-		attempts: 60, 
-        dataType: 'json'
-	});
-	
-	console.log('connect'+webSocket.connect());
-
-	console.log('isConnected: '+ webSocket.isConnected() )
-
-    // reconnected listening
-    webSocket.listen(function(message) {
-        console.log('listen' )//+ message.text);
-    });
-
-    webSocket.send({ 'text': 'hello' }).done(function() 
-	{
-        // message send
-		console.log('send done')
-    }).
-	fail(function(e) {
-		console.log('fail')
-        // error sending
-    });*/
-	
-</script>
-
 <script>
-var socket = null;
-
 
 $(document).ready(function()
 {
 	$('#btnSend').click(function(e) 
 	{
-		console.log('BIT_ACCOUNT_ID '+ $('#BIT_ACCOUNT_ID').val()+ ' '+$.md5( $('#BIT_ACCOUNT_ID').val()) )
-		console.log('BIT_KKT_TOKEN '+ $('#BIT_KKT_TOKEN').val()+ ' '+ $.md5( $('#BIT_KKT_TOKEN').val()) )
-		console.log('BIT_TRANSACTION_ID '+ $('#BIT_TRANSACTION_ID').val()+ ' '+ $.md5( $('#BIT_TRANSACTION_ID').val()) )
-		console.log('BIT_JSON '+ $('#BIT_JSON').val()+ ' '+ $.md5( $('#BIT_JSON').val()) )
-		console.log('BIT_DATAINTEGRITY_CODE '+ $('#BIT_DATAINTEGRITY_CODE').val()+ ' '+ $.md5( $('#BIT_DATAINTEGRITY_CODE').val()) )
-		console.log('BIT_CALLBACK_SUCCESS '+ $('#BIT_CALLBACK_SUCCESS').val()+ ' '+ $.md5( $('#BIT_CALLBACK_SUCCESS').val()) )
-		console.log('BIT_CALLBACK_FAILED '+ $('#BIT_CALLBACK_FAILED').val()+ ' '+ $.md5( $('#BIT_CALLBACK_FAILED').val()) )
-		
+
 		
 		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
 		$('#BIT_KKT_TOKEN').val() + 
@@ -107,8 +68,7 @@ $(document).ready(function()
 		$('#BIT_CALLBACK_FAILED').val() + 
 		$('#BIT_DATAINTEGRITY_CODE').val())
 		
-		console.log('BIT_SIGNATURE ' +BIT_SIGNATURE )
-		
+	
 		val = $('#BIT_JSON').val()
 		
 		var btoaded = btoa( encodeURIComponent( val ) )
@@ -131,7 +91,6 @@ $(document).ready(function()
 		var newVal = parseInt($('#BIT_TRANSACTION_ID').val()) + 1
 		window.location.href = '/api/test.php?BIT_TRANSACTION_ID='+newVal+'&BIT_KKT_TOKEN='+$('#BIT_KKT_TOKEN').val()
 		return false
-		//$('#BIT_TRANSACTION_ID').val(newVal)
 		
 	});
 
@@ -167,9 +126,8 @@ $BIT_KKT_TOKEN = $_GET["BIT_KKT_TOKEN"]; //"d620cb5d4a0adb66838d20449f6ab370";
 $BIT_TRANSACTION_ID = $_GET["BIT_TRANSACTION_ID"];
 $BIT_DATAINTEGRITY_CODE="adasdsadsasdfgdsfsdasafsdfdsfdfa";
 
-//$BIT_SIGNATURE = md5($BIT_ACCOUNT_ID.$BIT_KKT_TOKEN.$BIT_TRANSACTION_ID.$BIT_JSON.$BIT_DATAINTEGRITY_CODE);
 
-
+// здесь укажите уникальный номер вашего ккт (см. в личном кабинете kkmspb.ru)
 $kkt = array(
 "Меркурий"=>"d620cb5d4a0adb66838d20449f6ab370" , 
 "как-то не корректный хэш ККТ"=>"543r34543543",
