@@ -7,10 +7,9 @@
 	<link rel="icon" href="/favicon/sova-120x120.svg" type="image/svg+xml" />
 
 	<title>Программное обеспечение для автоматизации торговли</title>
-	<meta name="description" content="Пробиваем чеки удаленно на кассовых аппаратах в программе БИТ драйвер ККТ (под Windows)." />
-	<meta name="keywords" content="Программное обеспечение,БИТ драйвер ККТ" />
+	<meta name="description" content="Пробиваем чеки удаленно на кассовых аппаратах через АПИ  программе БИТ драйвер ККТ." />
 	
-	<script src="/lk/www/remote-check/jquery-3.2.1.js"></script>
+	<script src="/api/js/jquery-3.2.1.js"></script>
 	<script src="/api/js/jquery.md5.js"></script>
 
 
@@ -53,73 +52,58 @@
 </style>
 
 
-<script type="text/javascript">
-/*
-    var webSocket = $.simpleWebSocket({ 
-		url: 'ws://localhost:33333/',
-		timeout: 20000,	
-		attempts: 60, 
-        dataType: 'json'
-	});
-	
-	console.log('connect'+webSocket.connect());
-
-	console.log('isConnected: '+ webSocket.isConnected() )
-
-    // reconnected listening
-    webSocket.listen(function(message) {
-        console.log('listen' )//+ message.text);
-    });
-
-    webSocket.send({ 'text': 'hello' }).done(function() 
-	{
-        // message send
-		console.log('send done')
-    }).
-	fail(function(e) {
-		console.log('fail')
-        // error sending
-    });*/
-	
-</script>
-
 <script>
-var socket = null;
-
 
 $(document).ready(function()
 {
-	$('#btnSend').click(function(e) 
+	$('#btnCallPaymentDlg').click(function(e) 
 	{
-		console.log('BIT_ACCOUNT_ID '+ $('#BIT_ACCOUNT_ID').val()+ ' '+$.md5( $('#BIT_ACCOUNT_ID').val()) )
-		console.log('BIT_KKT_TOKEN '+ $('#BIT_KKT_TOKEN').val()+ ' '+ $.md5( $('#BIT_KKT_TOKEN').val()) )
-		console.log('BIT_TRANSACTION_ID '+ $('#BIT_TRANSACTION_ID').val()+ ' '+ $.md5( $('#BIT_TRANSACTION_ID').val()) )
-		console.log('txtarea '+ $('#txtarea').val()+ ' '+ $.md5( $('#txtarea').val()) )
-		console.log('BIT_DATAINTEGRITY_CODE '+ $('#BIT_DATAINTEGRITY_CODE').val()+ ' '+ $.md5( $('#BIT_DATAINTEGRITY_CODE').val()) )
-		console.log('BIT_CALLBACK_SUCCESS '+ $('#BIT_CALLBACK_SUCCESS').val()+ ' '+ $.md5( $('#BIT_CALLBACK_SUCCESS').val()) )
-		console.log('BIT_CALLBACK_FAILED '+ $('#BIT_CALLBACK_FAILED').val()+ ' '+ $.md5( $('#BIT_CALLBACK_FAILED').val()) )
-		
-		
 		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
 		$('#BIT_KKT_TOKEN').val() + 
 		$('#BIT_TRANSACTION_ID').val() + 
-		$('#txtarea').val()  + 
+		$('#BIT_JSON').val()  + 
 		$('#BIT_CALLBACK_SUCCESS').val() + 
 		$('#BIT_CALLBACK_FAILED').val() + 
 		$('#BIT_DATAINTEGRITY_CODE').val())
 		
-		console.log('BIT_SIGNATURE ' +BIT_SIGNATURE )
-		
-		val = $('#txtarea').val()
+	
+		val = $('#BIT_JSON').val()
 		
 		var btoaded = btoa( encodeURIComponent( val ) )
 		
-		$('#txtarea').hide()
-		$('#txtarea').val(btoaded)
+		$('#BIT_JSON').hide()
+		$('#BIT_JSON').val(btoaded)
 		
 		$('#BIT_SIGNATURE').val(BIT_SIGNATURE)
 		
 		$('#form1').attr('action', 'https://kkmspb.ru/api/payment-dlg.php')
+		
+		$('#form1').submit();
+		return false
+
+	});
+	
+	$('#btnFiscal').click(function(e) 
+	{
+		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
+		$('#BIT_KKT_TOKEN').val() + 
+		$('#BIT_TRANSACTION_ID').val() + 
+		$('#BIT_JSON').val()  + 
+		$('#BIT_CALLBACK_SUCCESS').val() + 
+		$('#BIT_CALLBACK_FAILED').val() + 
+		$('#BIT_DATAINTEGRITY_CODE').val())
+		
+	
+		val = $('#BIT_JSON').val()
+		
+		var btoaded = btoa( encodeURIComponent( val ) )
+		
+		$('#BIT_JSON').hide()
+		$('#BIT_JSON').val(btoaded)
+		
+		$('#BIT_SIGNATURE').val(BIT_SIGNATURE)
+		
+		$('#form1').attr('action', 'https://kkmspb.ru/api/test-internet-check.php')
 		
 		$('#form1').submit();
 		return false
@@ -132,7 +116,6 @@ $(document).ready(function()
 		var newVal = parseInt($('#BIT_TRANSACTION_ID').val()) + 1
 		window.location.href = '/api/test.php?BIT_TRANSACTION_ID='+newVal+'&BIT_KKT_TOKEN='+$('#BIT_KKT_TOKEN').val()
 		return false
-		//$('#BIT_TRANSACTION_ID').val(newVal)
 		
 	});
 
@@ -151,7 +134,7 @@ $(document).ready(function()
 		if( $('#BIT_KKT_TOKEN :selected').val()=="")
 			$('#BIT_KKT_TOKEN').find('option[value=empty]').prop('selected', true)
 		
-		$('#txtarea').val( JSON.stringify( BIT_JSON , null , 2))
+		$('#BIT_JSON').val( JSON.stringify( BIT_JSON , null , 2))
 });	
 
 </script>	
@@ -168,9 +151,8 @@ $BIT_KKT_TOKEN = $_GET["BIT_KKT_TOKEN"]; //"d620cb5d4a0adb66838d20449f6ab370";
 $BIT_TRANSACTION_ID = $_GET["BIT_TRANSACTION_ID"];
 $BIT_DATAINTEGRITY_CODE="adasdsadsasdfgdsfsdasafsdfdsfdfa";
 
-//$BIT_SIGNATURE = md5($BIT_ACCOUNT_ID.$BIT_KKT_TOKEN.$BIT_TRANSACTION_ID.$BIT_JSON.$BIT_DATAINTEGRITY_CODE);
 
-
+// здесь укажите уникальный номер вашего ккт (см. в личном кабинете kkmspb.ru)
 $kkt = array(
 "Меркурий"=>"d620cb5d4a0adb66838d20449f6ab370" , 
 "как-то не корректный хэш ККТ"=>"543r34543543",
@@ -223,8 +205,12 @@ echo "
 			BIT_CALLBACK_FAILED : <input id=\"BIT_CALLBACK_FAILED\" name=\"BIT_CALLBACK_FAILED\" value=\"http://kkmspb.ru/api/callback/failed.php\" size=\"35\"/>
 		</label>
 		
-		<button id=\"btnSend\" style=\"background:#509b7f; color:#FFFFFF;\" type=\"submit\">
-			Принять оплату с фисказацией чека
+		<button id=\"btnCallPaymentDlg\" style=\"background:#509b7f; color:#FFFFFF;\" type=\"submit\">
+			Принять оплату в диалоге (режим товароучетка)
+		</button>
+		
+		<button id=\"btnFiscal\" style=\"background:#509b7f; color:#FFFFFF;\" type=\"submit\">
+			поставить чек в очередь на фискализацию (режим оплата в облаке)
 		</button>
 		
 		<label>
@@ -233,7 +219,7 @@ echo "
 		
 			
 		<div style=\"margin:1em;\">
-			<textarea id=\"txtarea\" name=\"BIT_JSON\" cols=\"75\" rows=\"40\"></textarea>
+			<textarea id=\"BIT_JSON\" name=\"BIT_JSON\" cols=\"75\" rows=\"40\"></textarea>
 		</div>
 		
 	</form>
