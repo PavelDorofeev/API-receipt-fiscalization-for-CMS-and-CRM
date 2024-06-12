@@ -49,6 +49,8 @@ label{
 	flex-direction:row;
 	align-items:center;
 	margin-left:0.3em;
+	margin-top:0.2em;
+	margin-bottom:0.1em;
 	padding:0.3em;
 	flex-wrap: wrap;
 }
@@ -67,15 +69,26 @@ button{
 	margin:auto;
 }
 .div_json{
+	display:flex;
+	flex-direction:column;
 	overflow-x:auto;
 	width:100%;
+	margin:auto;
+	max-width:50em;
 }
+
+textarea{
+	white-space: pre;
+	overflow-wrap: normal;
+	overflow-x: scroll;
+}
+
 @media screen and (max-width: 640px)
 {
 	body{
 		font-size:20px;
 	}
-	input,select,option,textarea{
+	input,select,option{
 	max-width: 100%;
 	}
 }
@@ -93,14 +106,15 @@ $(document).ready(function()
 		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
 		$('#BIT_KKT_TOKEN').val() + 
 		$('#BIT_ORDER_ID').val() + 
-		$('#JSON').val()  + 
+		$('#DATA').val()  + 
 		$('#BIT_CALLBACK_SUCCESS').val() + 
 		$('#BIT_CALLBACK_FAILED').val() + 
 		$('#BIT_DATAINTEGRITY_CODE').val())
 		
 	
-		val = $('#JSON').val()
+		val = $('#DATA').val()
 		
+		console.log('val'+val)
 		var btoaded = btoa( encodeURIComponent( val ) )
 		//var btoaded = btoa( val )
 		
@@ -122,13 +136,13 @@ $(document).ready(function()
 		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
 		$('#BIT_KKT_TOKEN').val() + 
 		$('#BIT_ORDER_ID').val() + 
-		$('#BIT_DATA').val()  + 
+		$('#DATA').val()  + 
 		$('#BIT_CALLBACK_SUCCESS').val() + 
 		$('#BIT_CALLBACK_FAILED').val() + 
 		$('#BIT_DATAINTEGRITY_CODE').val())
 		
 	
-		val = $('#BIT_DATA').val()
+		val = $('#DATA').val()
 		
 		var btoaded = btoa( encodeURIComponent( val ) )
 		
@@ -168,7 +182,7 @@ $(document).ready(function()
 		if( $('#BIT_KKT_TOKEN :selected').val()=="")
 			$('#BIT_KKT_TOKEN').find('option[value=empty]').prop('selected', true)
 		
-		$('#JSON').val( JSON.stringify( DATA , null , 2))
+		$('#DATA').val( JSON.stringify( DATA , null , 2))
 });	
 
 </script>	
@@ -260,7 +274,7 @@ echo "
 	</form>
 	
 		<div class=\"div_json\">
-			<textarea id=\"JSON\" cols=\"75\" rows=\"40\"></textarea>
+			<textarea id=\"DATA\" cols=\"75\" rows=\"40\"></textarea>
 		</div>
 		
 	<hr>
