@@ -14,41 +14,84 @@
 
 
 <style type="text/css">
-	button{
-		padding:0.5em;
-		font-size:150%;
-		margin:0.3em;
-	}
+html{
+	width:100%;
+}
+body{
+	display:flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items:center;
+	background: #c1d9c5;
+	width:100%;
+	margin: auto auto;
+}
+#wrapper{
+	display:flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items:center;
+	margin:auto;
+	width:100%;
+}
+h1{
+	margin:0 auto;
+}
+input,select,option,textarea{
+	font-size:inherit;
+	padding:0.5em;
+	border-radius:0.2em;
+	margin-left: 1em;
+}
+
+label{
+	display:flex;
+	flex-direction:row;
+	align-items:center;
+	margin-left:0.3em;
+	margin-top:0.2em;
+	margin-bottom:0.1em;
+	padding:0.3em;
+	flex-wrap: wrap;
+}
+
+button{
+	padding:0.5em;
+	font-size:150%;
+	margin:0.3em;
+	border-radius: 0.3em;
+	max-width:25em;
+}
+.form1{
+	display:flex;
+	flex-direction: column;
+	justify-content: center;
+	margin:auto;
+}
+.div_json{
+	display:flex;
+	flex-direction:column;
+	overflow-x:auto;
+	width:100%;
+	margin:auto;
+	max-width:50em;
+}
+
+textarea{
+	white-space: pre;
+	overflow-wrap: normal;
+	overflow-x: scroll;
+}
+
+@media screen and (max-width: 640px)
+{
 	body{
-		display:flex;
-		flex-direction: column;
-		justify-content: center;
-		margin:auto;
-		background: #c1d9c5;
-	}
-	h1{
-		margin:auto;
+		font-size:20px;
 	}
 	input,select,option{
-		font-size:inherit;
-		padding:0.5em;
-		border-radius:0.2em;
-		margin-left: 1em;
+	max-width: 100%;
 	}
-	
-	label{
-		display:flex;
-		flex-direction:row;
-		align-items:center;
-		margin:0.3em;
-		padding:0.3em;
-	}
-	.form1{
-		display:flex;
-		flex-direction: column;
-		justify-content: center;
-		margin:auto;
-	}
+}
 </style>
 
 
@@ -56,29 +99,34 @@
 
 $(document).ready(function()
 {
+	$('#BIT_DATA').hide()
+	
 	$('#btnCallPaymentDlg').click(function(e) 
 	{
 		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
 		$('#BIT_KKT_TOKEN').val() + 
-		$('#BIT_TRANSACTION_ID').val() + 
-		$('#BIT_JSON').val()  + 
+		$('#BIT_ORDER_ID').val() + 
+		$('#DATA').val()  + 
 		$('#BIT_CALLBACK_SUCCESS').val() + 
 		$('#BIT_CALLBACK_FAILED').val() + 
 		$('#BIT_DATAINTEGRITY_CODE').val())
 		
 	
-		val = $('#BIT_JSON').val()
+		val = $('#DATA').val()
 		
+		console.log('val'+val)
 		var btoaded = btoa( encodeURIComponent( val ) )
+		//var btoaded = btoa( val )
 		
-		$('#BIT_JSON').hide()
-		$('#BIT_JSON').val(btoaded)
+		//$('#BIT_DATA').hide()
+		$('#BIT_DATA').val(btoaded)
 		
 		$('#BIT_SIGNATURE').val(BIT_SIGNATURE)
 		
 		$('#form1').attr('action', 'https://kkmspb.ru/api/payment-dlg.php')
 		
 		$('#form1').submit();
+		
 		return false
 
 	});
@@ -87,23 +135,23 @@ $(document).ready(function()
 	{
 		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
 		$('#BIT_KKT_TOKEN').val() + 
-		$('#BIT_TRANSACTION_ID').val() + 
-		$('#BIT_JSON').val()  + 
+		$('#BIT_ORDER_ID').val() + 
+		$('#DATA').val()  + 
 		$('#BIT_CALLBACK_SUCCESS').val() + 
 		$('#BIT_CALLBACK_FAILED').val() + 
 		$('#BIT_DATAINTEGRITY_CODE').val())
 		
 	
-		val = $('#BIT_JSON').val()
+		val = $('#DATA').val()
 		
 		var btoaded = btoa( encodeURIComponent( val ) )
 		
-		$('#BIT_JSON').hide()
-		$('#BIT_JSON').val(btoaded)
+		$('#BIT_DATA').hide()
+		$('#BIT_DATA').val(btoaded)
 		
 		$('#BIT_SIGNATURE').val(BIT_SIGNATURE)
 		
-		$('#form1').attr('action', 'https://kkmspb.ru/api/test-internet-check.php')
+		$('#form1').attr('action', 'https://kkmspb.ru/api/create-receipt.php')
 		
 		$('#form1').submit();
 		return false
@@ -112,9 +160,10 @@ $(document).ready(function()
 	
 	$('#increment').click(function(e) 
 	{
-			
-		var newVal = parseInt($('#BIT_TRANSACTION_ID').val()) + 1
-		window.location.href = '/api/test.php?BIT_TRANSACTION_ID='+newVal+'&BIT_KKT_TOKEN='+$('#BIT_KKT_TOKEN').val()
+		//var newVal = parseInt($('#BIT_ORDER_ID').val()) +1
+		var newVal = getRandomNumber(1, 1000000)
+		$('#BIT_ORDER_ID').val(newVal ) 
+		//window.location.href = '/api/test.php?BIT_ORDER_ID='+newVal+'&BIT_KKT_TOKEN='+$('#BIT_KKT_TOKEN').val()
 		return false
 		
 	});
@@ -122,25 +171,30 @@ $(document).ready(function()
 	$('#BIT_KKT_TOKEN').change(function(e) 
 	{
 			
-		var BIT_TRANSACTION_ID = parseInt($('#BIT_TRANSACTION_ID').val()) 
-		window.location.href = '/api/test.php?BIT_TRANSACTION_ID='+BIT_TRANSACTION_ID+'&BIT_KKT_TOKEN='+$('#BIT_KKT_TOKEN').val()
+		var BIT_ORDER_ID = parseInt($('#BIT_ORDER_ID').val()) 
+		window.location.href = '/api/test.php?BIT_ORDER_ID='+BIT_ORDER_ID+'&BIT_KKT_TOKEN='+$('#BIT_KKT_TOKEN').val()
 		return false
 	});
 
-	if( $('#BIT_TRANSACTION_ID').val() =='')
-		$('#BIT_TRANSACTION_ID').val(1234)
+	if( $('#BIT_ORDER_ID').val() =='')
+		$('#BIT_ORDER_ID').val(1234)
 	
 		
 		if( $('#BIT_KKT_TOKEN :selected').val()=="")
 			$('#BIT_KKT_TOKEN').find('option[value=empty]').prop('selected', true)
 		
-		$('#BIT_JSON').val( JSON.stringify( BIT_JSON , null , 2))
+		$('#DATA').val( JSON.stringify( DATA , null , 2))
 });	
 
+function getRandomNumber(min, max) 
+{
+    return parseInt( Math.random() * (max - min) + min)
+}
 </script>	
 
 </head>
 <body>
+<div id="wrapper">
 	<h1>Ваша CMS/CRM</h1>
 	
 <?php 
@@ -148,7 +202,7 @@ $(document).ready(function()
 
 $BIT_ACCOUNT_ID ="896";
 $BIT_KKT_TOKEN = $_GET["BIT_KKT_TOKEN"]; //"d620cb5d4a0adb66838d20449f6ab370";
-$BIT_TRANSACTION_ID = $_GET["BIT_TRANSACTION_ID"];
+$BIT_ORDER_ID = $_GET["BIT_ORDER_ID"];
 $BIT_DATAINTEGRITY_CODE="adasdsadsasdfgdsfsdasafsdfdsfdfa";
 
 
@@ -183,26 +237,26 @@ echo "
 			echo "
 				<option value=\"empty\">выберите ккт</option>";
 			
-				
+/*		<label>
+			без печати на термоленте: <input name=\"without_receipt_on_paper\" type=\"checkbox\" checked/>
+		</label>
+	*/			
 		echo "	</select>
 		</label>
 			
 		<label>
-			BIT_TRANSACTION_ID : <input id=\"BIT_TRANSACTION_ID\" name=\"BIT_TRANSACTION_ID\" value=\"$BIT_TRANSACTION_ID\" />
+			BIT_ORDER_ID : <input id=\"BIT_ORDER_ID\" name=\"BIT_ORDER_ID\" value=\"$BIT_ORDER_ID\" />
 			<button id=\"increment\"> + </button>
 		</label>
 		
 		
+		
 		<label>
-			без печати на термоленте: <input name=\"without_receipt_on_paper\" type=\"checkbox\" checked/>
+			BIT_CALLBACK_SUCCESS : <input id=\"BIT_CALLBACK_SUCCESS\" name=\"BIT_CALLBACK_SUCCESS\" value=\"http://kkmspb.ru/api/callback/success.php\" size=\"31\"/>
 		</label>
 		
 		<label>
-			BIT_CALLBACK_SUCCESS : <input id=\"BIT_CALLBACK_SUCCESS\" name=\"BIT_CALLBACK_SUCCESS\" value=\"http://kkmspb.ru/api/callback/success.php\" size=\"35\"/>
-		</label>
-		
-		<label>
-			BIT_CALLBACK_FAILED : <input id=\"BIT_CALLBACK_FAILED\" name=\"BIT_CALLBACK_FAILED\" value=\"http://kkmspb.ru/api/callback/failed.php\" size=\"35\"/>
+			BIT_CALLBACK_FAILED : <input id=\"BIT_CALLBACK_FAILED\" name=\"BIT_CALLBACK_FAILED\" value=\"http://kkmspb.ru/api/callback/failed.php\" size=\"31\"/>
 		</label>
 		
 		<button id=\"btnCallPaymentDlg\" style=\"background:#509b7f; color:#FFFFFF;\" type=\"submit\">
@@ -214,23 +268,35 @@ echo "
 		</button>
 		
 		<label>
-			BIT_SIGNATURE : <input id=\"BIT_SIGNATURE\" name=\"BIT_SIGNATURE\" value=\"\" placeholder=\"вычисляется непосредственно перед передачей\"/>
+			BIT_SIGNATURE : <input id=\"BIT_SIGNATURE\" name=\"BIT_SIGNATURE\" value=\"\" placeholder=\"вычисляется перед передачей\"/>
 		</label>
 		
-			
 		<div style=\"margin:1em;\">
-			<textarea id=\"BIT_JSON\" name=\"BIT_JSON\" cols=\"75\" rows=\"40\"></textarea>
+			<textarea type=\"hidden\" id=\"BIT_DATA\" name=\"BIT_DATA\" cols=\"75\" rows=\"40\"></textarea>
 		</div>
+			
 		
 	</form>
 	
+		<div class=\"div_json\">
+			<textarea id=\"DATA\" cols=\"75\" rows=\"40\"></textarea>
+		</div>
 		
 	<hr>
+	
+	<p>Наш открытый проект на гитхабе, здесь можено скачать <a  target=_blank https://kkmspb.ru/me/href=\"https://github.com/PavelDorofeev/API-receipt-fiscalization-for-CMS-and-CRM\">АПИ драйвер ККТ и примерами</a>.
+	<p>
+	
+	<p>Войти личный кабинет <a href=\"https://kkmspb.ru/me/\">для настройки связи с кассовым аппаратом</a>.
+	<p>
+	
+	<p>Скачать приложение под Windows <a target=_blank href=\"https://kkmspb.ru/software/BIT-driver-KKT/download/\">БИТ драйвер ККТ</a>.
+	<p>
 </div>
 ";
 ?>
 <script type="text/javascript">
-var BIT_JSON={	
+var DATA={
 	"purchases":
 	[
 		{
@@ -267,10 +333,14 @@ var BIT_JSON={
 	"receiptType_1054" : 0
 }
 </script>
-
+</div>
 </body>
-</html>"
+</html>
+
 <!--
+
+
+
 			"countryOfOrigin_1230" : "RUS",
 			"customsDeclaration_1231": "xx/yy/zzz",
 			"exciseAmount_1229" : 3.44,
