@@ -151,7 +151,7 @@ $(document).ready(function()
 		
 		$('#BIT_SIGNATURE').val(BIT_SIGNATURE)
 		
-		$('#form1').attr('action', 'https://kkmspb.ru/api/create-receipt.php')
+		$('#form1').attr('action', 'https://kkmspb.ru/api/create-receipt-dlg.php')
 		
 		$('#form1').submit();
 		return false
@@ -184,6 +184,9 @@ $(document).ready(function()
 			$('#BIT_KKT_TOKEN').find('option[value=empty]').prop('selected', true)
 		
 		$('#DATA').val( JSON.stringify( DATA , null , 2))
+		
+		var newVal = getRandomNumber(1, 1000000)
+		$('#BIT_ORDER_ID').val(newVal ) 
 });	
 
 function getRandomNumber(min, max) 
@@ -200,101 +203,106 @@ function getRandomNumber(min, max)
 <?php 
 
 
-$BIT_ACCOUNT_ID ="896";
+$BIT_ACCOUNT_ID ="897";
 $BIT_KKT_TOKEN = $_GET["BIT_KKT_TOKEN"]; //"d620cb5d4a0adb66838d20449f6ab370";
 $BIT_ORDER_ID = $_GET["BIT_ORDER_ID"];
-$BIT_DATAINTEGRITY_CODE="adasdsadsasdfgdsfsdasafsdfdsfdfa";
+$BIT_DATAINTEGRITY_CODE="dfhgkjfdhjklfdjvkrjkvj856mvgkjmr";
 
 
 // здесь укажите уникальный номер вашего ккт (см. в личном кабинете kkmspb.ru)
 $kkt = array(
-"Меркурий"=>"d620cb5d4a0adb66838d20449f6ab370" , 
+"Меркурий 25d2d664570d77022f519e8481512d78"=>"25d2d664570d77022f519e8481512d78" , 
 "как-то не корректный хэш ККТ"=>"543r34543543",
-"Атол"=>"f039001210451fae2f18c2f6d75a5cc3");
+"Атол f039001210451fae2f18c2f6d75a5cc3"=>"f039001210451fae2f18c2f6d75a5cc3");
 
-echo "
+echo '
 		<label>
-			BIT_DATAINTEGRITY_CODE : <input id=\"BIT_DATAINTEGRITY_CODE\" name=\"BIT_DATAINTEGRITY_CODE\" value=\"$BIT_DATAINTEGRITY_CODE\" />
-		</label>";
+			BIT_DATAINTEGRITY_CODE : <input id="BIT_DATAINTEGRITY_CODE" name="BIT_DATAINTEGRITY_CODE" value="'.$BIT_DATAINTEGRITY_CODE.'" />
+		</label>';
 
-echo "
-	<form id=\"form1\" class=\"form1\"  action=\"https://kkmspb.ru/api/payment-dlg.php\" method=\"post\" >
+echo '
+	<form id="form1" class="form1"  action="https://kkmspb.ru/api/payment-dlg.php" method="post" >
 
 		<label>
-			BIT_ACCOUNT_ID : <input name=\"BIT_ACCOUNT_ID\" id=\"BIT_ACCOUNT_ID\" value=\"$BIT_ACCOUNT_ID\" />
+			BIT_ACCOUNT_ID : <input name="BIT_ACCOUNT_ID" id="BIT_ACCOUNT_ID" value="'.$BIT_ACCOUNT_ID.'" />
 		</label>
 		
 		<label>
 			BIT_KKT_TOKEN :
-			<select name=\"BIT_KKT_TOKEN\" id=\"BIT_KKT_TOKEN\">";
+			<select name="BIT_KKT_TOKEN" id="BIT_KKT_TOKEN">';
 			
 			foreach($kkt as $kk => $vv)
 			{
-				echo "
-				<option value=\"$vv\" ".(( $vv == $BIT_KKT_TOKEN)?" selected":"")." >$kk</option>";
+				echo '
+				<option value="'.$vv.'" '.(( $vv == $BIT_KKT_TOKEN)?" selected":"").' >'.$kk.'</option>';
 			}
 		
-			echo "
-				<option value=\"empty\">выберите ккт</option>";
+			echo '
+				<option value="empty">выберите ккт</option>';
 			
 /*		<label>
-			без печати на термоленте: <input name=\"without_receipt_on_paper\" type=\"checkbox\" checked/>
+			без печати на термоленте: <input name="without_receipt_on_paper" type="checkbox" checked/>
 		</label>
 	*/			
-		echo "	</select>
+		echo '</select>
 		</label>
+		
 			
 		<label>
-			BIT_ORDER_ID : <input id=\"BIT_ORDER_ID\" name=\"BIT_ORDER_ID\" value=\"$BIT_ORDER_ID\" />
-			<button id=\"increment\"> + </button>
+			BIT_ORDER_ID : <input id="BIT_ORDER_ID" name="BIT_ORDER_ID" value="$BIT_ORDER_ID" />
+			<button id="increment"> + </button>
 		</label>
-		
-		
+	
 		
 		<label>
-			BIT_CALLBACK_SUCCESS : <input id=\"BIT_CALLBACK_SUCCESS\" name=\"BIT_CALLBACK_SUCCESS\" value=\"http://kkmspb.ru/api/callback/success.php\" size=\"31\"/>
+			BIT_CALLBACK_SUCCESS : <input id="BIT_CALLBACK_SUCCESS" name="BIT_CALLBACK_SUCCESS" value="https://kkmspb.ru/api/callback/success.php" size="38"/>
 		</label>
 		
 		<label>
-			BIT_CALLBACK_FAILED : <input id=\"BIT_CALLBACK_FAILED\" name=\"BIT_CALLBACK_FAILED\" value=\"http://kkmspb.ru/api/callback/failed.php\" size=\"31\"/>
+			BIT_CALLBACK_FAILED : <input id="BIT_CALLBACK_FAILED" name="BIT_CALLBACK_FAILED" value="https://kkmspb.ru/api/callback/failed.php" size="38"/>
 		</label>
 		
-		<button id=\"btnCallPaymentDlg\" style=\"background:#509b7f; color:#FFFFFF;\" type=\"submit\">
+		<label>
+			BIT_PROG_URL:<input name="BIT_PROG_URL" value="https://109.188.142.134:44735" size="38" />
+		</label>
+		
+		<button id="btnCallPaymentDlg" style="background:#509b7f; color:#FFFFFF;" type="submit">
 			Принять оплату в диалоге (режим товароучетка)
 		</button>
 		
-		<button id=\"btnFiscal\" style=\"background:#509b7f; color:#FFFFFF;\" type=\"submit\">
+		<button id="btnFiscal" style="background:#509b7f; color:#FFFFFF;" type="submit">
 			поставить чек в очередь на фискализацию (режим оплата в облаке)
 		</button>
+
 		
-		<label>
-			BIT_SIGNATURE : <input id=\"BIT_SIGNATURE\" name=\"BIT_SIGNATURE\" value=\"\" placeholder=\"вычисляется перед передачей\"/>
+			BIT_SIGNATURE : <input id="BIT_SIGNATURE" name="BIT_SIGNATURE" value="" placeholder="вычисляется перед передачей"/>
 		</label>
 		
-		<div style=\"margin:1em;\">
-			<textarea type=\"hidden\" id=\"BIT_DATA\" name=\"BIT_DATA\" cols=\"75\" rows=\"40\"></textarea>
+		<div style="margin:1em;">
+			<textarea type="hidden" id="BIT_DATA" name="BIT_DATA" cols="75" rows="40"></textarea>
 		</div>
 			
 		
 	</form>
 	
-		<div class=\"div_json\">
-			<textarea id=\"DATA\" cols=\"75\" rows=\"40\"></textarea>
+		<div class="div_json">
+			<textarea id="DATA" cols="75" rows="40"></textarea>
 		</div>
 		
 	<hr>
 	
-	<p>Наш открытый проект на гитхабе, здесь можено скачать <a  target=_blank https://kkmspb.ru/me/href=\"https://github.com/PavelDorofeev/API-receipt-fiscalization-for-CMS-and-CRM\">АПИ драйвер ККТ и примерами</a>.
+	<p>Наш открытый проект на гитхабе, здесь можено скачать <a  target=_blank https://kkmspb.ru/me/href="https://github.com/PavelDorofeev/API-receipt-fiscalization-for-CMS-and-CRM">АПИ драйвер ККТ с примерами</a>.
 	<p>
 	
-	<p>Войти личный кабинет <a href=\"https://kkmspb.ru/me/\">для настройки связи с кассовым аппаратом</a>.
+	<p>Войти личный кабинет <a target=_blank href="https://kkmspb.ru/me/">для настройки связи с кассовым аппаратом</a>.
 	<p>
 	
-	<p>Скачать приложение под Windows <a target=_blank href=\"https://kkmspb.ru/software/BIT-driver-KKT/download/\">БИТ драйвер ККТ</a>.
+	<p>Скачать приложение под Windows <a target=_blank href="https://kkmspb.ru/software/BIT-driver-KKT/download/">БИТ драйвер ККТ</a>.
 	<p>
-</div>
-";
+</div>';
+
 ?>
+
 <script type="text/javascript">
 var DATA={
 	"purchases":
@@ -309,15 +317,6 @@ var DATA={
 			"tax_1199" : 6,
 		
 			"additionalAttribut_1191":"что-то дополнительное"
-		},
-		{
-			"productName_1030" : "товар 234",
-			"price_1079" : 22.00,
-			"qty_1023" : 1.00,
-			"unit_2108" : 0,
-			"paymentFormCode_1214" : 2,
-			"productTypeCode_1212" : 3,
-			"tax_1199" : 6
 		}
 	 ],
 	"cashierName_1021": "Пупкин Иван Трофимович",
