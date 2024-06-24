@@ -62,6 +62,23 @@ button{
 	border-radius: 0.3em;
 	max-width:25em;
 }
+button:active{
+	box-shadow: 0 0 0 4px blue;
+	transform: scale(0.99);
+	outline: unset
+}
+
+button:press{
+	box-shadow: 0 0 0 4px yellow;
+	transform: scale(0.99);
+	outline: unset
+}
+button:hover{
+	box-shadow: 0 0 0 4px green;
+	transform: scale(0.99);
+	outline: unset
+}
+
 .form1{
 	display:flex;
 	flex-direction: column;
@@ -204,7 +221,13 @@ function getRandomNumber(min, max)
 
 
 $BIT_ACCOUNT_ID ="897";
-$BIT_KKT_TOKEN = $_GET["BIT_KKT_TOKEN"]; //"d620cb5d4a0adb66838d20449f6ab370";
+
+if($_GET["BIT_KKT_TOKEN"]=="") 
+	$BIT_KKT_TOKEN = "57098a455125c20b262f2ba77c6a3c5e"; // по умолчанию
+else
+	$BIT_KKT_TOKEN = $_GET["BIT_KKT_TOKEN"]; // это перевыбор ккт
+
+//"d620cb5d4a0adb66838d20449f6ab370";
 $BIT_ORDER_ID = $_GET["BIT_ORDER_ID"];
 $BIT_DATAINTEGRITY_CODE="dfhgkjfdhjklfdjvkrjkvj856mvgkjmr";
 
@@ -213,7 +236,7 @@ $BIT_DATAINTEGRITY_CODE="dfhgkjfdhjklfdjvkrjkvj856mvgkjmr";
 $kkt = array(
 "Меркурий 25d2d664570d77022f519e8481512d78"=>"25d2d664570d77022f519e8481512d78" , 
 "как-то не корректный хэш ККТ"=>"543r34543543",
-"Атол f039001210451fae2f18c2f6d75a5cc3"=>"f039001210451fae2f18c2f6d75a5cc3");
+"Атол 57098a455125c20b262f2ba77c6a3c5e"=>"57098a455125c20b262f2ba77c6a3c5e");
 
 echo '
 		<label>
