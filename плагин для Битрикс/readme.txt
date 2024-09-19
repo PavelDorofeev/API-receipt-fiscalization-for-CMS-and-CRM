@@ -7,23 +7,7 @@
 
 Если папки /local/modules не существует, то ее можно создать.
 
-Далее в надо в файле local\php_interface\init.php добавить подключение нашего модуля
-
-
-//--------------------------------------------------------------------------------
-Например так :
-
-require_once( $_SERVER['DOCUMENT_ROOT'] . '/local/php_interface/autoload.php');
-
-$request = \Bitrix\Main\Context::getCurrent()->getRequest();
-
-if( $request->isAdminSection())
-{
-	if( $request->getRequestedPage() == '/bitrix/admin/sale_order_view.php' )
-		require_once( $_SERVER['DOCUMENT_ROOT'] . '/local/modules/paymentacceptance/autoload.php');
-}
-
-//--------------------------------------------------------------------------------
+Нигде никуда в исходниках битрикс свой код теперь добавлять не надо.
 
 Теперь модуль paymentacceptance появится в админке битрикс в списке модулей
 и его надо подключить (нажать кнопку).
