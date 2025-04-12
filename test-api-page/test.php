@@ -30,16 +30,33 @@
 <?php 
 
 
-$BIT_ACCOUNT_ID ="950";
+//$BIT_ACCOUNT_ID ="950";
 
-$BIT_KKT_TOKEN = "3a5c770d7e36c94a6d58d1f7153bd485"; // по умолчанию
-$BIT_KKT_TOKEN = "c751398cbf6f97b912050906923da1d6"; // по умолчанию
+if( array_key_exists ( "BIT_KKT_TOKEN" , $_GET) )
+{
+	$BIT_KKT_TOKEN = $_GET["BIT_KKT_TOKEN"]; // по умолчанию
+}
+
+if( array_key_exists ( "BIT_ACCOUNT_ID" , $_GET) )
+{
+	$BIT_ACCOUNT_ID = $_GET["BIT_ACCOUNT_ID"]; // по умолчанию
+}
+
+if( array_key_exists ( "BIT_BNK_TRM_TOKEN" , $_GET) )
+{
+	$BIT_BNK_TRM_TOKEN = $_GET["BIT_BNK_TRM_TOKEN"]; // по умолчанию
+}
+
+if( array_key_exists ( "BIT_DATAINTEGRITY_CODE" , $_GET) )
+{
+	$BIT_DATAINTEGRITY_CODE = $_GET["BIT_DATAINTEGRITY_CODE"]; // по умолчанию
+}
 
 //$BIT_ORDER_ID = $_GET["BIT_ORDER_ID"];
 
-$BIT_DATAINTEGRITY_CODE="GSDFHAGASHDGFHSADGFHSDGFDASHFDSA";
+//$BIT_DATAINTEGRITY_CODE="GSDFHAGASHDGFHSADGFHSDGFDASHFDSA";
 
-$BIT_BNK_TRM_TOKEN = '2bb9bbe5a103c897a4896cab18c394ae';
+//$BIT_BNK_TRM_TOKEN = '2bb9bbe5a103c897a4896cab18c394ae';
 
 //$BIT_BNK_TRM_SUM = 11.00;
 
@@ -74,7 +91,7 @@ $host="vspbkassa.ru";
 echo '
 <div id="wrapper2">
 	
-	<div class="div_json">
+	<div class="div_json w100">
 		<h2 class="m0 p0">пакет команд АПИ 1.2</h2>
 		<textarea id="DATA" cols="30" rows="30"></textarea>
 	</div>
@@ -82,46 +99,54 @@ echo '
 	<form id="form1" class="form1"  action="https://'.$host.'/api/payment-dlg.php" method="post" >
 
 		<h2>БИТ драйвер ККТ вер.1.21.2</h2>
-		<div class="m1 div1 p1 m0">
-		
-			<h2>Принять оплату (режим товароучетка)</h2>
+		<div >
+			<div class="bcAAA br05 p1 m0 w100">
 			
-			<button id="btnSendJsonPacket" class="whiteOnBlue">
-				выполнить
-			</button>		
-		</div>
-		
-		
-		<div class="grd2auto p1 grGap05 m0 bcAAA br05">
-			
-			<label>
-				BIT_KKT_TOKEN :
-			</label>
-			<input name="BIT_KKT_TOKEN" id="BIT_KKT_TOKEN" value="'.$BIT_KKT_TOKEN.'" />
-			
-			
-			<label>
-				BIT_BNK_TRM_TOKEN:
-			</label>
-			<input name="BIT_BNK_TRM_TOKEN" id="BIT_BNK_TRM_TOKEN" value="'.$BIT_BNK_TRM_TOKEN.'" />
-			
+				<h2>Принять оплату (режим товароучетка)</h2>
 				
-			<label>
-				BIT_ORDER_ID : 
-			</label>
-			<div class="flRow">
-				<input id="BIT_ORDER_ID" name="BIT_ORDER_ID" value="$BIT_ORDER_ID" />
-				<button id="increment" class="whiteOnBlue"> + </button>
+				<button id="btnSendJsonPacket" class="whiteOnBlue">
+					выполнить
+				</button>		
 			</div>
 			
-			<label>
-				BIT_PROG_URL:
-			</label>
-			<input id="BIT_PROG_URL_APP" value="http://localhost:44735" />
+			<span>&nbsp;</span>
 			
-		
-		
+			<div class="grd2auto p1 grGap05 m0 bcAAA br05">
+				
+				<label>
+					BIT_KKT_TOKEN :
+				</label>
+				<input name="BIT_KKT_TOKEN" id="BIT_KKT_TOKEN" value="'.$BIT_KKT_TOKEN.'" placeholder="возьмите токен из лк на kkmspb.ru" size=32 />
+				
+				
+				<label>
+					BIT_BNK_TRM_TOKEN:
+				</label>
+				<input name="BIT_BNK_TRM_TOKEN" id="BIT_BNK_TRM_TOKEN" value="'.$BIT_BNK_TRM_TOKEN.'" placeholder="возьмите токен из лк на kkmspb.ru" size=32/>
+				
+					
+				<label>
+					BIT_ORDER_ID : 
+				</label>
+				<div class="flRow">
+					<input id="BIT_ORDER_ID" name="BIT_ORDER_ID" value="$BIT_ORDER_ID" />
+					<button id="increment" class="whiteOnBlue"> + </button>
+				</div>
+				
+				<label>
+					BIT_PROG_URL:
+				</label>
+				<input id="BIT_PROG_URL_APP" value="http://localhost:44735" />
+				
+				<label>
+					BIT_DATAINTEGRITY_CODE:
+				</label>
+				<input name="BIT_DATAINTEGRITY_CODE" id="BIT_DATAINTEGRITY_CODE" value="'.$BIT_DATAINTEGRITY_CODE.'" placeholder="доп. защита, возьмите значение из лк на kkmspb.ru" size=32/>
+				
 			
+			
+				
+			</div>
 		</div>
 		
 		<div style="margin:1em;">
@@ -176,6 +201,19 @@ echo '
 
 */
 
+$bnk="";
+if( $BIT_BNK_TRM_TOKEN != "")
+{
+	$bnk = '	
+	{
+		"name":"1. Оплата по карте",
+		"type":"bnkCardPayment",
+		"data": 
+		{
+			"sum":12
+		}
+	},';
+}
 ?>
 
 <! -- 
@@ -183,15 +221,7 @@ echo '
 	когда мы распарсим строку в QMap или std::map мы получим другой порядок (упорядочивание оп ключу)
 -->
 <script type="text/javascript">
-var DATA=[
-	{
-		"name":"1. Оплата по 'карте'",
-		"type":"bnkCardPayment",
-		"data": 
-		{
-			"sum":12
-		}
-	},
+var DATA=[ <?php echo $bnk;?>
 	{
 		"name":"2. Фискализируем чек",
 		"type":"kktReceiptFiscalization",

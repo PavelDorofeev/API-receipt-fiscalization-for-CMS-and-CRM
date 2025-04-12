@@ -110,11 +110,12 @@ button:hover{
 .div_json{
 	display:flex;
 	flex-direction:column;
-	align-items:center;
+	/*align-items:center;*/
 	overflow-x:auto;
 	width:100%;
 	/*margin:auto;*/
-	max-width:25em;
+	max-width:45em;
+	min-width:25em;
 }
 
 textarea{
