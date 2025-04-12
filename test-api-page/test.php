@@ -227,20 +227,19 @@ var DATA=[ <?php echo $bnk;?>
 		"type":"kktReceiptFiscalization",
 		"data": 
 		{
-			"purchases":
-			[
-				{
-					"productName_1030" : "товар 123",
-					"price_1079" : 11.00,
-					"qty_1023" : 1.00,
-					"unit_2108" : 10,
-					"paymentFormCode_1214" : 2,
-					"productTypeCode_1212" : 3,
-					"tax_1199" : 6,
-				
-					"additionalAttribut_1191":"что-то дополнительное"
-				}
-			 ],
+			"purchase1_1059":
+			{
+				"productName_1030" : "товар 123",
+				"price_1079" : 11.00,
+				"qty_1023" : 1.00,
+				"amount_1043" : 11.00,
+				"unit_2108" : 0,
+				"paymentFormCode_1214" : 2,
+				"productTypeCode_1212" : 3,
+				"tax_1199" : 6,
+			
+				"additionalAttribut_1191":"что-то дополнительное"
+			},
 			"cashierName_1021": "Пупкин Иван Трофимович",
 			"cashierInn_1203":"",
 			"payments":{
