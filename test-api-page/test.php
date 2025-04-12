@@ -9,16 +9,16 @@
 	<title>Программное обеспечение для автоматизации торговли</title>
 	<meta name="description" content="Пробиваем чеки удаленно на кассовых аппаратах через АПИ  программе БИТ драйвер ККТ." />
 	
-	<link rel="stylesheet" type="text/css" href="/api/css/shared.css?1d335" />
+	<link rel="stylesheet" type="text/css" href="api/css/shared.css?1d335" />
 	
 	<!--<script src="/api/js/jquery-3.2.1.js"></script> -->
-	<script src="/api/js/jquery.md5.js"></script>
-	<script src="/api/js/jquery-3.7.1.js"></script>
+	<script src="api/js/jquery.md5.js"></script>
+	<script src="api/js/jquery-3.7.1.js"></script>
 
-	<script src="/api/js/jquery-ui.js"></script>
+	<script src="api/js/jquery-ui.js"></script>
 
-	<script src="/api/js/shared.js"></script>
-	<script src="/api/js/general.js"></script>
+	<script src="api/js/shared.js"></script>
+	<script src="api/js/general.js"></script>
 
 
 
