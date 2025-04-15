@@ -7,7 +7,7 @@
 	<link rel="icon" href="/favicon/sova-120x120.svg" type="image/svg+xml" />
 
 	<title>Программное обеспечение для автоматизации торговли</title>
-	<meta name="description" content="Пробиваем чеки удаленно на кассовых аппаратах через АПИ  программе БИТ драйвер ККТ." />
+	<meta name="description" content="Пробиваем чеки удаленно на кассовых аппаратах через АПИ в программе БИТ драйвер ККТ." />
 	
 	<link rel="stylesheet" type="text/css" href="api/css/shared.css?1d335" />
 	
@@ -93,7 +93,8 @@ echo '
 	
 	<div class="div_json w100">
 		<h2 class="m0 p0">пакет команд АПИ 1.2</h2>
-		<textarea id="DATA" cols="30" rows="30"></textarea>
+		<textarea id="RECEIPT" cols="30" rows="30"></textarea>
+		<textarea id="BNK_CARD" cols="20" rows="10"></textarea>
 	</div>
 	
 	<form id="form1" class="form1"  action="https://'.$host.'/api/payment-dlg.php" method="post" >
@@ -104,8 +105,17 @@ echo '
 			
 				<h2>Принять оплату (режим товароучетка)</h2>
 				
-				<button id="btnSendJsonPacket" class="whiteOnBlue">
-					выполнить
+				<button id="btnSendReceipt" class="whiteOnBlue">
+					ЧЕК
+				</button>		
+				<button id="btnBnkCard" class="whiteOnBlue">
+					БАНК.КАРТА
+				</button><BR>					
+				<button id="btnKktCloseShift" class="whiteOnBlue">
+					Закрыть смену
+				</button>					
+				<button id="btnKktOpenShift" class="whiteOnBlue">
+					Открыть смену
 				</button>		
 			</div>
 			
@@ -221,7 +231,19 @@ if( $BIT_BNK_TRM_TOKEN != "")
 	когда мы распарсим строку в QMap или std::map мы получим другой порядок (упорядочивание оп ключу)
 -->
 <script type="text/javascript">
-var DATA=[ <?php echo $bnk;?>
+
+var BNK_CARD=[ 
+	{
+		"name":"1. Оплата по карте",
+		"type":"bnkCardPayment",
+		"data": 
+		{
+			"sum":12
+		}
+	}
+]
+
+var RECEIPT=[ <?php echo $bnk;?>
 	{
 		"name":"2. Фискализируем чек",
 		"type":"kktReceiptFiscalization",
@@ -254,6 +276,30 @@ var DATA=[ <?php echo $bnk;?>
 			"sendToEmail_1008" : "kkmspb2008@yandex.ru",
 			"printDoc":true
 		}
+	}
+]
+var kktCloseShift=[ 
+	{
+		"name":"Закрываем смену",
+		"type":"kktCloseShift",
+		"data": 
+		{
+			"cashierName_1021": "Пупкин Иван Трофимович",
+			"cashierInn_1203":""
+		}
+		
+	}
+]
+var kktOpenShift=[ 
+	{
+		"name":"Открываем смену",
+		"type":"kktOpenShift",
+		"data": 
+		{
+			"cashierName_1021": "Пупкин Иван Трофимович",
+			"cashierInn_1203":""
+		}
+		
 	}
 ]
 </script>

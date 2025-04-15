@@ -31,6 +31,38 @@ function sendPost(url)
 	$('#form1').submit();
 }
 
+function sendCloseShift(url)
+{
+	console.log('url:'+url)
+	
+	var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
+	$('#BIT_KKT_TOKEN').val() + 
+	$('#BIT_ORDER_ID').val() + 
+	$('#closeShift').val()  + 
+	$('#BIT_CALLBACK_SUCCESS').val() + 
+	$('#BIT_CALLBACK_FAILED').val() + 
+	$('#BIT_DATAINTEGRITY_CODE').val())
+	
+
+	val = $('#DATA').val()
+	
+	console.log('val'+val)
+	var btoaded = btoa( encodeURIComponent( val ) )
+
+	$('#BIT_DATA').val(btoaded)
+	
+	$('#BIT_SIGNATURE').val(BIT_SIGNATURE)
+	
+	if( $('#BIT_PROG_URL_APP').val() )
+	{
+		$('#BIT_PROG_URL').val( $('#BIT_PROG_URL_APP').val() )
+	}
+	
+	$('#form1').attr('action', url )
+	
+	$('#form1').submit();
+}
+
 function uuidv4()
  {
   return "10000000-1000-4000-8000-100000000000".replace(/[018]/g, c =>
@@ -47,56 +79,11 @@ function toHexString(byteArray)
   }).join('')
 }
 
-function sendAjaxJsonCommandsPacket( url )
+function sendAjaxJsonCommandsPacket( url , hhh , jsnStr , text)
 {
-	aaaa('Принять оплату....')
+	aaaa(text)
 
-	//return;
-	//return;
-	//console.log('begin_bnk_trm url:'+url +  '  eqpt_hash:'+eqpt_hash )
-		
-	data = {} 
-
-	var hhh = {}
-		
-	/*if ( $('#BIT_BNK_TRM_SUM').val() != "")
-	{
-		hhh['Bnk_sum'] = $('#BIT_BNK_TRM_SUM').val()
-	}*/
-
-	if( $('#BIT_BNK_TRM_TOKEN').val() != "")
-	{
-		hhh[ $('#BIT_BNK_TRM_TOKEN').val() ] = "1"//$('#BIT_BNK_TRM_TOKEN').val()
-	}
-	
-	if( $('#BIT_KKT_TOKEN').val() != "")
-	{
-		hhh[ $('#BIT_KKT_TOKEN').val() ] = "1"
-	}
-	
-	//uuid = uuidv4()
-	//console.log('uuid'+uuid);
-	
-	hhh['Action']='toLocalhost'
-	hhh['Bit_order_id']=$('#BIT_ORDER_ID').val()
-	
-	//data["BIT_ORDER_ID"] = $('#BIT_ORDER_ID').val()
-	
-	//data["BIT_SIGNATURE"] = $('#BIT_SIGNATURE').val()
-	
-	
-	//var btoaded = btoa( encodeURIComponent( $('#DATA').val) ) 
-	//var btoaded = btoa( $('#DATA').val() )  // ! The string to be encoded contains characters outside of the Latin1 range
-	//data['json'] =  btoaded
-	data['json'] =  $('#DATA').val()
-	//console.log('data[json] '+ data['json'] )	
-	
-	//ww = toHexString( $('#DATA').val() )
-	//console.log('toHexString '+ ww )	
-	
-
-	console.log('data '+ JSON.stringify(data , null , 2) )	
-	
+	jsnObj = encodeURIComponent( jsnStr );
 	
 	var ajaxFn = function () 
 	{
@@ -106,7 +93,7 @@ function sendAjaxJsonCommandsPacket( url )
 			method: 'POST',
 			dataType: 'json',
 			headers: hhh,
-			data:data,
+			data:jsnObj,
 			async: false,
 			
 			error: function( jqXHR , status, errorMsg)
@@ -192,26 +179,132 @@ $(document).ready(function()
 		return false
 	});
 	
-	$('#btnSendJsonPacket').click(function(e) 
+	$('#btnSendReceipt').click(function(e) 
 	{	
-		console.log('btnSendJsonPacket click')
+		console.log('btnSendReceipt click')
 		e.preventDefault(false);
-		setTimeout( sendAjaxJsonCommandsPacket ,  100, 'http://localhost:44735' )
+		
+		var hhh = {}
+		
+		if( $('#BIT_BNK_TRM_TOKEN').val() != "")
+		{
+			hhh['BIT_BNK_TRM_TOKEN' ] =$('#BIT_BNK_TRM_TOKEN').val()
+		}
+		
+		if( $('#BIT_KKT_TOKEN').val() != "")
+		{
+			hhh['BIT_KKT_TOKEN' ] =$('#BIT_KKT_TOKEN').val()
+		}		
+		
+		if( $('#BIT_PROG_URL_APP').val() == "")
+		{
+			alert( 'не указан url куда посылат запрос')
+			return
+		}
+		
+
+		hhh['Action']='command_list'
+		hhh['BIT_ORDER_ID']=$('#BIT_ORDER_ID').val()
+		hhh['BIT_ENCODE_TYPE']='JS'
+		
+		var json = $('#RECEIPT').val()
+		
+		
+		setTimeout( sendAjaxJsonCommandsPacket ,  100,  $('#BIT_PROG_URL_APP').val() ,  hhh , json )
+		
 		return false
 
 	});	
+	
+	$('#btnBnkCard').click(function(e) 
+	{	
+		console.log('btnSendReceipt click')
+		e.preventDefault(false);
+		
+		var hhh = {}
+		
+		if( $('#BIT_BNK_TRM_TOKEN').val() != "")
+		{
+			hhh['BIT_BNK_TRM_TOKEN' ] =$('#BIT_BNK_TRM_TOKEN').val()
+		}
+		
+		if( $('#BIT_KKT_TOKEN').val() != "")
+		{
+			hhh['BIT_KKT_TOKEN' ] =$('#BIT_KKT_TOKEN').val()
+		}		
+		
+		if( $('#BIT_PROG_URL_APP').val() == "")
+		{
+			alert( 'не указан url куда посылат запрос')
+			return
+		}
+		
+
+		hhh['Action']='command_list'
+		hhh['BIT_ORDER_ID']=$('#BIT_ORDER_ID').val()
+		hhh['BIT_ENCODE_TYPE']='JS'
+		
+		var json = $('#BNK_CARD').val()
+		
+		
+		setTimeout( sendAjaxJsonCommandsPacket ,  100,  $('#BIT_PROG_URL_APP').val() ,  hhh , json )
+		
+		return false
+
+	});		
+	
+	$('#btnKktOpenShift').click(function(e) 
+	{	
+		e.preventDefault(false);
+		
+		var hhh = {}
+		
+		hhh['BIT_KKT_TOKEN' ] =$('#BIT_KKT_TOKEN').val()
+		
+		hhh['Action']='command_list'
+		hhh['Bit_order_id']=$('#BIT_ORDER_ID').val()
+		hhh['BIT_ENCODE_TYPE']='JS'
+		
+		var json = JSON.stringify(kktOpenShift , null , 2);
+		
+		
+		setTimeout( sendAjaxJsonCommandsPacket ,  100, 'http://localhost:44735' ,  hhh , json )
+		
+		return false
+	});	
+	
+	$('#btnKktCloseShift').click(function(e) 
+	{	
+		e.preventDefault(false);
+		
+		var hhh = {}
+		
+		hhh['BIT_KKT_TOKEN' ] =$('#BIT_KKT_TOKEN').val()
+		
+		hhh['Action']='command_list'
+		hhh['Bit_order_id']=$('#BIT_ORDER_ID').val()
+		hhh['BIT_ENCODE_TYPE']='JS'
+		
+		var json = JSON.stringify(kktCloseShift , null , 2);
+		
+		
+		setTimeout( sendAjaxJsonCommandsPacket ,  100, 'http://localhost:44735' ,  hhh , json )
+		
+		return false
+	});	
+	
 	$('#btnFiscal').click(function(e) 
 	{
 		var BIT_SIGNATURE = $.md5( $('#BIT_ACCOUNT_ID').val() + 
 		$('#BIT_KKT_TOKEN').val() + 
 		$('#BIT_ORDER_ID').val() + 
-		$('#DATA').val()  + 
+		$('#RECEIPT').val()  + 
 		$('#BIT_CALLBACK_SUCCESS').val() + 
 		$('#BIT_CALLBACK_FAILED').val() + 
 		$('#BIT_DATAINTEGRITY_CODE').val())
 		
 	
-		val = $('#DATA').val()
+		val = $('#RECEIPT').val()
 		
 		var btoaded = btoa( encodeURIComponent( val ) )
 		
@@ -242,36 +335,11 @@ $(document).ready(function()
 		
 	});
 	
-	$('#BIT_BNK_TRM_SUM').change(function(e) 
-	{
-		var newVal = parseFloat($(this).val())
-		
-		var lst = JSON.parse( $('#DATA').val() )
-		
-		/*for( var el : lst)
-		{
-		}*/
-		
-		return false
-		
-	});
 
-	$('#BIT_KKT_TOKEN').change(function(e) 
-	{
-			
-		var BIT_ORDER_ID = parseInt($('#BIT_ORDER_ID').val()) 
-		window.location.href = '/api/test.php?BIT_ORDER_ID='+BIT_ORDER_ID+'&BIT_KKT_TOKEN='+$('#BIT_KKT_TOKEN').val()
-		return false
-	});
-
-	if( $('#BIT_ORDER_ID').val() =='')
-		$('#BIT_ORDER_ID').val(1234)
 	
-		
-	if( $('#BIT_KKT_TOKEN :selected').val()=="")
-		$('#BIT_KKT_TOKEN').find('option[value=empty]').prop('selected', true)
+	$('#RECEIPT').val( JSON.stringify( RECEIPT , null , 2))
 	
-	$('#DATA').val( JSON.stringify( DATA , null , 2))
+	$('#BNK_CARD').val( JSON.stringify( BNK_CARD , null , 2))
 	
 	var newVal = getRandomNumber(1, 1000000)
 	$('#BIT_ORDER_ID').val(newVal ) 
