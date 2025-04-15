@@ -4,7 +4,13 @@
 
 Не забудьте добавить в вашем лк на kkmspb.ru наименование вашего сайта для обхода защиты CORS.
 
+Для работы надо установить БИТ драйвер ККТ версии выше 1.26.5.
 
+Представлены две страницы:
+
+1. test.php работаем через ajax заросы.
+
+2. test-from-php.php работаем через curl на php.
 
 На сайте kkmspb.ru есть несколько видео [https://kkmspb.ru/software/BIT-driver-KKT/](https://kkmspb.ru/software/BIT-driver-KKT/) .
 
