@@ -33,7 +33,7 @@
 Мы например в защитнике Виндоус добавляем программу C:\Program Files (x86)\BIT_Driver_KKT\BIT_driverKKT.exe
 в список разрешенных, это на виндоус 10: Настройка/ Firewall and Net Protection /Windows Firewall/ Alloow an app through firewall. 
 
-
+Если что мы испольхуем антивирус TotalSecurity (вроде нам не мешает).
 
 На сайте kkmspb.ru есть несколько видео [https://kkmspb.ru/software/BIT-driver-KKT/](https://kkmspb.ru/software/BIT-driver-KKT/) .
 
