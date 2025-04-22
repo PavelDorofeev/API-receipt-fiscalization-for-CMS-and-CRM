@@ -18,8 +18,8 @@ $BIT_RECEIPT = [
 			'productTypeCode_1212'=>1,
 			'tax_1199'=>6
 		),
-		'cashierName_1021'=>'Третьякова-Филимоненко Марина Владимировна',
-		'cashierInn_1203'=>'930300067715',
+		'cashierName_1021'=>'Пупкин Иван Трофимофич',
+		'cashierInn_1203'=>'',
 		'payments'=>[
 					  'cash_1031'=>1,
 					  'ecash_1081'=>0,
@@ -29,7 +29,7 @@ $BIT_RECEIPT = [
 					],
 		'taxationType_1055'=>1,
 		'receiptType_1054'=>1,
-		'sendToEmail_1008'=>'flinks1986@gmail.com',
+		'sendToEmail_1008'=>'kkmspb2008@yandex.ru',
 		'printDoc'=>true
 	)
 	)
@@ -40,8 +40,8 @@ $BIT_CLOSE_SHIFT = [
 	'name'=>'Закрытие смены',
 	'type'=>'kktCloseShift',
 	'data'=>array(
-		'cashierName_1021'=>'Третьякова-Филимоненко Марина Владимировна',
-		'cashierInn_1203'=>'930300067715'
+		'cashierName_1021'=>'Пупкин Иван Трофимофич',
+		'cashierInn_1203'=>''
 	)
 	)
 ];
@@ -51,8 +51,8 @@ $BIT_OPEN_SHIFT = [
 	'name'=>'Открытие смены',
 	'type'=>'kktOpenShift',
 	'data'=>array(
-		'cashierName_1021'=>'Третьякова-Филимоненко Марина Владимировна',
-		'cashierInn_1203'=>'930300067715'
+		'cashierName_1021'=>'Пупкин Иван Трофимофич',
+		'cashierInn_1203'=>''
 	)
 	)
 ];
