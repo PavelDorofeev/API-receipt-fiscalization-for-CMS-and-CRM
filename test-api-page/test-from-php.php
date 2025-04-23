@@ -39,7 +39,7 @@ $BIT_RECEIPT = [
 					],
 		'taxationType_1055'=>1,
 		'receiptType_1054'=>1,
-		'sendToEmail_1008'=>'flinks1986@gmail.com',
+		'sendToEmail_1008'=>'kkmspb2008@yandex.ru',
 		'printDoc'=>true
 	)
 	)
@@ -386,7 +386,7 @@ $BIT_RECEIPT = [
 					],
 		'taxationType_1055'=>1,
 		'receiptType_1054'=>1,
-		'sendToEmail_1008'=>'flinks1986@gmail.com',
+		'sendToEmail_1008'=>'kkmspb2008@yandex.ru',
 		'printDoc'=>true
 	)
 	)
