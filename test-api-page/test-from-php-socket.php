@@ -8,8 +8,8 @@ $BIT_X_REPORT = array( 	array(
 	'name'=>'X отчет',
 	'type'=>'kktXReport',
 	'data'=>array(
-		'cashierName_1021'=>'Третьякова-Филимоненко Марина Владимировна',
-		'cashierInn_1203'=>'930300067715'
+		'cashierName_1021'=>'Пупкин Иван Трофимович',
+		'cashierInn_1203'=>''
 	)
 	)
 );
@@ -44,8 +44,8 @@ $postdata = array( array(
                     "tax_1199"=> 6
                 )
             ),
-            "cashierName_1021"=> "Третьякова-Филимоненко Марина Владимировна",
-            "cashierInn_1203"=> "930300067715",
+            "cashierName_1021"=> "Пупкин Иван Трофимович",
+            "cashierInn_1203"=> "",
             "payments"=> array(
                 "cash_1031"=> 0,
                 "ecash_1081"=> 0,

@@ -274,7 +274,8 @@ curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
 			'BIT_KKT_TOKEN: 435cb88c28fc49bd419d58d4b60680b5', // атол 1.05 435cb88c28fc49bd419d58d4b60680b5  
 			// штрих 12d1ed895b8b5bc60137d68492e88017
 			// атол 1.2 ddf3cfc947c5fe3ee7ad96660c269e07
-			//'BIT_BNK_TRM_TOKEN: 7a6635341f95c54f4f6556c5940ed459'
+			//'BIT_BNK_TRM_TOKEN: 7a6635341f95c54f4f6556c5940ed459',
+			'Origin: https://kkmspb.ru'
         ) );
 
 $result = curl_exec($ch);
