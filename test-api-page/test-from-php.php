@@ -15,6 +15,13 @@
 	<meta name="description" content="Пробиваем чеки удаленно на кассовых аппаратах через АПИ в программе БИТ драйвер ККТ." />
 
 </head>
+<style>
+button{
+	margin:0.5em; 
+	paddig:0.2em; 
+}
+</style>
+
 <?php
 $unic_id = mt_rand();
 
@@ -26,23 +33,33 @@ $unic_id = mt_rand();
 		<form method="GET">
 			<button name="action" value="kktOpenShift"  type="submit">Открытие смены</button> 
 			<button name="action" value="kktCloseShift" type="submit">Закрытие смены</button> </br>
-			<button name="action" value="kktСashIn"     type="submit">Внесение</button> 
-			<button name="action" value="kktСashOut"    type="submit">Изъятие</button> </br>
+			<button name="action" value="kktCashIn"     type="submit">Внесение</button> 
+			<button name="action" value="kktCashOut"    type="submit">Изъятие</button> </br>
 			<button name="action" value="kktReceiptFiscalization" type="submit">Чек</button> 
 			<button name="action" value="kktReceiptFiscalization_big" type="submit">Чек (20 позиций)</button> 
 			<button name="action" value="kktXReport"    type="submit">X отчет</button> </br>
+			<button name="action" value="kktOpenCashDraw"    type="submit">открыть денежный ящик</button> </br>
 			<input name="cnt" type="hidden" value="<?php echo $unic_id;?>"/>
 		</form>
 	</div>
 
 <?php
 
+//phpinfo();
 
 $BIT_RECEIPT = [ 
 	array(
 	'name'=>'2. Фискализируем чек',
 	'type'=>'kktReceiptFiscalization',
 	'data'=>array(
+		'1261'=>[
+		array(	
+			'a_1262'=>'001',
+			'b_1263'=>'25.07.2025',
+			'c_1264'=>'001',
+			'd_1265'=>'jkersgdhfk8349544'			
+		)
+		],
 		'1059'=>[
 			array(
 				'productName_1030'=>'Отладка программы ',
@@ -68,7 +85,7 @@ $BIT_RECEIPT = [
 		'cashierName_1021'=>'Пупкин Иван Трофимович',
 		'cashierInn_1203'=>'',
 		'payments'=>[
-					  'cash_1031'=>2.88,
+					  'cash_1031'=>1000,
 					  'ecash_1081'=>0,
 					  'prepayment_1215'=>0,
 					  'credit_1216'=>0,
@@ -107,8 +124,8 @@ $BIT_OPEN_SHIFT = [
 $BIT_INCOM = [ 
 	array(
 	'name'=>'Внесение',
-	'type'=>'kktСashIn',
-	'sum'=>111.11,
+	'type'=>'kktCashIn',
+	'cashSum'=>111.11,
 	'data'=>array(
 		'cashierName_1021'=>'Пупкин Иван Трофимович',
 		'cashierInn_1203'=>'',
@@ -119,11 +136,11 @@ $BIT_INCOM = [
 $BIT_OUTCOM = [ 
 	array(
 	'name'=>'Внесение',
-	'type'=>'kktСashOut',
-	'sum'=>1.23,
+	'type'=>'kktCashOut',
+	'cashSum'=>1.23,
 	'data'=>array(
 		'cashierName_1021'=>'Пупкин Иван Трофимович',
-		'cashierInn_1203'=>'',
+		'cashierInn_1203'=>''
 	)
 	)
 ];
@@ -132,6 +149,17 @@ $BIT_X_REPORT = [
 	array(
 	'name'=>'X отчет',
 	'type'=>'kktXReport',
+	'data'=>array(
+		'cashierName_1021'=>'Пупкин Иван Трофимович',
+		'cashierInn_1203'=>'',
+	)
+	)
+];
+
+$BIT_OPEN_CASH_DRAW = [ 
+	array(
+	'name'=>'открыть денежный ящик',
+	'type'=>'kktOpenCashDraw',
 	'data'=>array(
 		'cashierName_1021'=>'Пупкин Иван Трофимович',
 		'cashierInn_1203'=>'',
@@ -156,10 +184,10 @@ if( $_GET["action"]=="kktOpenShift")
 else if( $_GET["action"]=="kktCloseShift")
 	$payload = json_encode( $BIT_CLOSE_SHIFT );
 
-else if( $_GET["action"]=="kktСashIn")
+else if( $_GET["action"]=="kktCashIn")
 	$payload = json_encode( $BIT_INCOM );
 	
-else if( $_GET["action"]=="kktСashOut")
+else if( $_GET["action"]=="kktCashOut")
 	$payload = json_encode( $BIT_OUTCOM );
 
 else if( $_GET["action"]=="kktReceiptFiscalization")
@@ -180,6 +208,9 @@ else if( $_GET["action"]=="kktReceiptFiscalization_big")
 else if( $_GET["action"]=="kktXReport")
 	$payload = json_encode( $BIT_X_REPORT );
 
+else if( $_GET["action"]=="kktOpenCashDraw")
+	$payload = json_encode( $BIT_OPEN_CASH_DRAW );
+
 //$payload = json_encode( $BIT_BNK_CARD );
 
 
@@ -193,11 +224,15 @@ curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 
 			//'Content-Length: '.mb_strlen($payload),
 curl_setopt( $ch, CURLOPT_HTTPHEADER, array(
-			//'Content-Type: application/json',
+			'Content-Type: application/json',
 			'Action: command_list',
 			'BIT_ENCODE_TYPE: PHP', 
 			'BIT_ORDER_ID: 122',
-			'BIT_KKT_TOKEN: ddf3cfc947c5fe3ee7ad96660c269e07', // атол 1.05 435cb88c28fc49bd419d58d4b60680b5  штрих 12d1ed895b8b5bc60137d68492e88017
+			//'BIT_KKT_TOKEN: 16bba36069e6a91d4919fa64c9236f4e', //мерк
+			//'BIT_KKT_TOKEN: 435cb88c28fc49bd419d58d4b60680b5', // атол 1.05 435cb88c28fc49bd419d58d4b60680b5  
+			'BIT_KKT_TOKEN: ddf3cfc947c5fe3ee7ad96660c269e07', // атол 1.2
+			// штрих 12d1ed895b8b5bc60137d68492e88017
+			// атол 1.2 ddf3cfc947c5fe3ee7ad96660c269e07
 			//'BIT_BNK_TRM_TOKEN: 7a6635341f95c54f4f6556c5940ed459',
 			'Origin: https://kkmspb.ru'
         ) );
@@ -219,7 +254,6 @@ echo "
 </html>
 
 <?php
-
 
 function addMorePurchases(&$data)
 {
