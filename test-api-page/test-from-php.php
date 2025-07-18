@@ -30,22 +30,33 @@ $unic_id = mt_rand();
 <body>
 
 	<div>
+	<p>Вы можете посмотреть содержание этой php страницы здесь: <a href="https://github.com/PavelDorofeev/API-receipt-fiscalization-for-CMS-and-CRM/tree/master/test-api-page">на github.</a></p>
+	
+	
+	
 		<form method="GET">
 			<button name="action" value="kktOpenShift"  type="submit">Открытие смены</button> 
-			<button name="action" value="kktCloseShift" type="submit">Закрытие смены</button> </br>
+			<button name="action" value="kktCloseShift" type="submit">Закрытие смены</button>
 			<button name="action" value="kktCashIn"     type="submit">Внесение</button> 
 			<button name="action" value="kktCashOut"    type="submit">Изъятие</button> </br>
 			<button name="action" value="kktReceiptFiscalization" type="submit">Чек</button> 
+			<button name="action" value="kktReceiptFiscalization_M" type="submit">Чек с маркировкой</button> 
 			<button name="action" value="kktReceiptFiscalization_20" type="submit">Чек (20 позиций)</button> 
 			<button name="action" value="kktReceiptFiscalization_40" type="submit">Чек (40 позиций)</button> 
 			<button name="action" value="kktReceiptFiscalization_80" type="submit">Чек (80 позиций)</button> 
 			<button name="action" value="kktXReport"    type="submit">X отчет</button> </br>
 			<button name="action" value="kktOpenCashDraw"    type="submit">открыть денежный ящик</button> </br>
-			<label>токен ккт:
-				<input name="BIT_KKT_TOKEN" value="<?php echo $_GET['BIT_KKT_TOKEN'];?>"    type="text" size="32"/> 
+			<label title="из лк на kkmspb.ru">токен ккт:
+				<input name="BIT_KKT_TOKEN" value="<?php echo $_GET['BIT_KKT_TOKEN'];?>"  size="32"/> 
 			</label></br>
 			
 			<input name="cnt" type="hidden" value="<?php echo $unic_id;?>"/>
+
+			<label title="проверка КМ через ККТ/ФН/ОФД ИСМ">считайте код маркировки:
+				<input name="KM" value="<?php echo $_GET['KM'];?>" type="text" size="150"/> 
+			</label>		
+			<button name="action" value="kktCheckKM" type="submit">Отправить</button>
+			</br>
 		</form>
 	</div>
 
@@ -69,23 +80,72 @@ $BIT_RECEIPT = [
 		'1059'=>[
 			array(
 				'productName_1030'=>'Отладка программы ',
-				'price_1079'=>1.23,
-				'qty_1023'=>2.345,
-				"amount_1043"=>2.88,
+				'price_1079'=>0,
+				'qty_1023'=>1,
+				"amount_1043"=>0,
+				'unit_2108'=>0,
+				'paymentFormCode_1214'=>4,
+				'productTypeCode_1212'=>1,
+				'tax_1199'=>6
+							)
+		],		
+		'cashierName_1021'=>'Пупкин Иван Трофимович',
+		'cashierInn_1203'=>'',
+		'payments'=>[
+					  'cash_1031'=>1000,
+					  'ecash_1081'=>0,
+					  'prepayment_1215'=>0,
+					  'credit_1216'=>0,
+					  'barter_1217'=>0
+					],
+		'taxationType_1055'=>1,
+		'receiptType_1054'=>1,
+		'sendToEmail_1008'=>'kkmspb2008@yandex.ru',
+		'printDoc'=>true
+	)
+	)
+];
+
+$BIT_RECEIPT_WITH_MARKING = [ 
+	array(
+	'name'=>'2. Фискализируем чек',
+	'type'=>'kktReceiptFiscalization',
+	'data'=>array(
+		'1059'=>[
+			array(
+				'productName_1030'=>'Отладка программы ',
+				'price_1079'=>0,
+				'qty_1023'=>1,
+				"amount_1043"=>0,
 				'unit_2108'=>0,
 				'paymentFormCode_1214'=>4,
 				'productTypeCode_1212'=>1,
 				'tax_1199'=>6,
-				//'dsasa_1163'=>'4605817132102', // так не работает 
-				/*'dsasa_1163'=> array( 
-					'imcType_2100' => 3, 
-					'imcModeProcessing_2102' => 0,  
-					'itemEstimatedStatus_2003' => 1, 
-					'imc_base64_2000' => 'MDEwNDYwMzU4NjAxNDY3NDIxNTAxMjUxNjY0MDI0Nx05MUVFMTAdOTJFQzlUUy8zQ2RyVHVPN001Kzluck5oeThvMHpxMkNIVjc0djdxdjc3K1BrPQ=='
-				)*/
-				//'dsasa_1162'=>'NDYwNTgxNzEzMjEwMg==' //4605817132102',
-				//'ean13_1302'=>'4605817132102',
-				//'gs_1163'=>'5432543254'
+
+				'imcType_2100' => 3, 
+				'mrkcode_2000'=>'MTM2MjIyMDAwMDU4ODEwOTE4UVdFUkRGRVdUNTEyMzQ1NllHSEZEU1dFUlQ1NllVSUpIR0ZEU0FFUlRZVUlPS0o4SEdGVkNYWlNETEtKSEdGRFNBT0lQTE1OQkdISllUUkRGR0hKS0lSRVdTREZHSEpJT0lVVERXUUFTREZSRVRZVUlVWUdUUkVERkdIVVlUUkVXUVdF',
+				'imcType_2100'=> 256,
+				'imcModeProcessing_2102'=>0,
+				'itemEstimatedStatus_2003'=>1
+				
+			),
+			array(
+				'productName_1030'=>'Отладка программы 2222',
+				'price_1079'=>0,
+				'qty_1023'=>1,
+				"amount_1043"=>0,
+				'unit_2108'=>0,
+				'paymentFormCode_1214'=>4,
+				'productTypeCode_1212'=>1,
+				'tax_1199'=>6,
+
+				'imcType_2100' => 3, 
+				// 01046501047515422155WqK<UW38Cwg91EE1092qIv57HQz9uYwVIWZNq105R3lcHMerZ85Cxw0HWUJuMk=
+				'mrkcode_2000'=>'MDEwNDY1MDEwNDc1MTU0MjIxNTVXcUs8VVczOEN3Zx05MUVFMTAdOTJxSXY1N0hRejl1WXdWSVdaTnExMDVSM2xjSE1lclo4NUN4dzBIV1VKdU1rPQ==',
+				'imcType_2100'=> 256,
+				'imcModeProcessing_2102'=>0,
+				'itemEstimatedStatus_2003'=>1
+
 			)
 		],		
 		'cashierName_1021'=>'Пупкин Иван Трофимович',
@@ -184,7 +244,23 @@ $BIT_BNK_CARD = [
   )
 ];
 
-if( $_GET["action"]=="kktOpenShift")
+
+if( $_GET["KM"] != "" )
+{
+	$cmd = [ 
+	array(
+	'name'=>'проверить код маркировки',
+	'type'=>'kktCheckKM',
+	'data'=>array(
+		'km_2000'=> $_GET["KM"]
+	)
+	)
+	];
+	
+	$payload = json_encode( $cmd );
+}
+
+else if( $_GET["action"]=="kktOpenShift")
 	$payload = json_encode( $BIT_OPEN_SHIFT );
 
 else if( $_GET["action"]=="kktCloseShift")
@@ -199,16 +275,16 @@ else if( $_GET["action"]=="kktCashOut")
 else if( $_GET["action"]=="kktReceiptFiscalization")
 	$payload = json_encode( $BIT_RECEIPT );
 
+else if( $_GET["action"]=="kktReceiptFiscalization_M")
+	$payload = json_encode( $BIT_RECEIPT_WITH_MARKING );
+
 else if( $_GET["action"]=="kktReceiptFiscalization_20")
 {
 	$summ = addMorePurchases($BIT_RECEIPT[0]["data"] , 20 , "наименование тестового товара 1235");
-	//echo "$summ=".$summ;
-	//echo "BIT_RECEIPT[payments][cash_1031]".$BIT_RECEIPT[0]["data"]["payments"]["cash_1031"];
 	
 	$BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] = $BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] + $summ ;
 	
 	$payload = json_encode( $BIT_RECEIPT );
-	//echo "<BR>payload: <pre>" .json_encode($BIT_RECEIPT , JSON_UNESCAPED_UNICODE|JSON_PRETTY_PRINT)."</pre><BR>\n";
 }
 else if( $_GET["action"]=="kktReceiptFiscalization_40")
 {
@@ -233,52 +309,57 @@ else if( $_GET["action"]=="kktXReport")
 else if( $_GET["action"]=="kktOpenCashDraw")
 	$payload = json_encode( $BIT_OPEN_CASH_DRAW );
 
-//$payload = json_encode( $BIT_BNK_CARD );
 
+if( $payload != "")
+{	
+	//$payload = json_encode( $BIT_BNK_CARD );
 
-$ch = curl_init(  'http://109.188.142.134:44736' );
+	$ch = curl_init(  'http://109.188.142.134:44736' );
 
-curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
+	curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
 
-curl_setopt( $ch, CURLOPT_POST, 1);
+	curl_setopt( $ch, CURLOPT_POST, 1);
 
-curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
+	curl_setopt( $ch, CURLOPT_RETURNTRANSFER, true );
 
-			//'Content-Length: '.mb_strlen($payload),
-$BIT_KKT_TOKEN='';
-if( array_key_exists('BIT_KKT_TOKEN' , $_GET ) )
-	$BIT_KKT_TOKEN= $_GET['BIT_KKT_TOKEN'];
-	
-		//'BIT_KKT_TOKEN: 16bba36069e6a91d4919fa64c9236f4e', //мерк
-		//'BIT_KKT_TOKEN: 435cb88c28fc49bd419d58d4b60680b5', // атол 1.05 435cb88c28fc49bd419d58d4b60680b5  
-		// ddf3cfc947c5fe3ee7ad96660c269e07', // атол 1.2
-		// штрих 12d1ed895b8b5bc60137d68492e88017
-		// атол 1.2 ddf3cfc947c5fe3ee7ad96660c269e07
-$headers = array(
-			'Content-Type: application/json',
-			'Action: command_list',
-			'BIT_ENCODE_TYPE: PHP', 
-			'BIT_ORDER_ID: 122',
-			'BIT_KKT_TOKEN: '.$BIT_KKT_TOKEN.'', 
-			'Origin: https://kkmspb.ru'
-        ) ;		
+				//'Content-Length: '.mb_strlen($payload),
+	$BIT_KKT_TOKEN='';
+	if( array_key_exists('BIT_KKT_TOKEN' , $_GET ) )
+		$BIT_KKT_TOKEN= $_GET['BIT_KKT_TOKEN'];
 		
-curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
+			//'BIT_KKT_TOKEN: 16bba36069e6a91d4919fa64c9236f4e', //мерк
+			//'BIT_KKT_TOKEN: 435cb88c28fc49bd419d58d4b60680b5', // атол 1.05 435cb88c28fc49bd419d58d4b60680b5  
+			// ddf3cfc947c5fe3ee7ad96660c269e07', // атол 1.2
+			// штрих 12d1ed895b8b5bc60137d68492e88017
+			// атол 1.2 ddf3cfc947c5fe3ee7ad96660c269e07
+	$headers = array(
+				'Content-Type: application/json',
+				'Action: command_list',
+				'BIT_ENCODE_TYPE: PHP', 
+				'BIT_ORDER_ID: 122',
+				'BIT_ALLOW_INVALID_MRK_CODES_WITH_CASHIER: true',
+				'BIT_KKT_TOKEN: '.$BIT_KKT_TOKEN, 
+				'Origin: https://kkmspb.ru'
+			) ;		
+			
+	curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
 
-$result = curl_exec($ch);
-curl_close($ch);
+	$result = curl_exec($ch);
+	curl_close($ch);
 
-echo "
-	<h2>Ответ</h2>
-	<pre>$result</pre>";
+	echo "
+		<h2>Ответ</h2>
+		<pre>$result</pre>";
 
 
-echo "
-	<h2>Послали:</h2>
-	<h3>заголовки:</h2>
-	<pre>" . json_encode(  $headers  , JSON_PRETTY_PRINT)."</pre>
-	<h3>тело:</h2>
-	<pre>" . json_encode( json_decode ( $payload , true ) , JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
+	echo "
+		<h2>Послали:</h2>
+		<h3>заголовки:</h2>
+		<pre>" . json_encode(  $headers  , JSON_PRETTY_PRINT)."</pre>
+		<h3>тело:</h2>
+		<pre>" . json_encode( json_decode ( $payload , true ) , JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE)."</pre>";
+	
+}	
 ?>
 
 </body>
