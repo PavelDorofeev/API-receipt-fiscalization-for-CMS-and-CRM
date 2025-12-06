@@ -1,3 +1,8 @@
+<?php 
+
+	
+
+?>
 <!DOCTYPE html>
 
 <html lang="ru">
@@ -24,17 +29,25 @@ button{
 
 <?php
 $unic_id = mt_rand();
-
 ?>
 
 <body style="width:100%">
 
 	<h2>Вы можете посмотреть содержание этой php страницы здесь: <a href="https://github.com/PavelDorofeev/API-receipt-fiscalization-for-CMS-and-CRM/tree/master/test-api-page">на github.</a></h2>
+<?php	
+
+	$get="";
+	parse_str( $_SERVER['QUERY_STRING'] , $get );
+	if(isset($get['action']))
+		unset($get['action']);
+	//header("Location: );
+	echo '
+	<button><a href="'.$_SERVER['PHP_SELF'].'?'.http_build_query( $get ).'">на исходную</a></button>';
+?>
 	
-	<div>
+	<div style="display:flex; flex-direction:row; width:100%;">
 	
-	
-		<form method="GET">
+		<form method="GET" style="background-color: #99b0ac; width:49%; padding:1em;">
 			<button name="action" value="kktOpenShift"  type="submit">Открытие смены</button> 
 			<button name="action" value="kktCloseShift" type="submit">Закрытие смены</button>
 			<button name="action" value="kktCashIn"     type="submit">Внесение</button> 
@@ -46,6 +59,7 @@ $unic_id = mt_rand();
 			<button name="action" value="kktReceiptFiscalization_80" type="submit">Чек<br>(80 позиций)</button> 
 			<button name="action" value="kktXReport"    type="submit">X отчет</button> </br>
 			<button name="action" value="kktOpenCashDraw"    type="submit">открыть денежный ящик</button> </br>
+			
 			<label title="из лк на kkmspb.ru">токен ккт:
 				<input name="BIT_KKT_TOKEN" value="<?php echo $_GET['BIT_KKT_TOKEN'];?>"  size="32"/> 
 			</label></br>
@@ -53,10 +67,42 @@ $unic_id = mt_rand();
 			<input name="cnt" type="hidden" value="<?php echo $unic_id;?>"/>
 
 			<label title="проверка КМ через ККТ/ФН/ОФД ИСМ">считайте код маркировки:
-				<input name="KM" value="<?php echo $_GET['KM'];?>" type="text" size="150" placeholder="пока не работает"/> 
+				<input name="KM" value="<?php echo $_GET['KM'];?>" type="text" placeholder="пока не работает"/> 
 			</label>		
 			<button name="action" value="kktCheckKM" type="submit">Отправить</button>
 			</br>
+			<div style="padding:0.5em;">
+				<label title="всплывающее окно из программы БИТ драйвер ККТ">	показывать окно (с логом процесса) из программы БИТ драйвер ККТ
+					<select name="showMode">
+						<option value="4" <?php echo (($_GET["showMode"]=="4") ? "selected":""); ?>>никогда</option>
+						<option value="2" <?php echo (($_GET["showMode"]=="2") ? "selected":""); ?>>когда ошибка</option>
+						<option value="1" <?php echo (($_GET["showMode"]=="1") ? "selected":""); ?> >всегда показывать</option>
+					</select>
+				</label>
+			</div>			
+		</form>
+		
+		<hr>
+		<form method="GET" style="background-color: #a198af; width:49%; padding:1em;">
+			<label title="из лк на kkmspb.ru">токен банк.терминала:
+				<input name="BIT_BNK_TRM_TOKEN" value="<?php echo '625dfdbcd9fb3adb35593a5d994f0604';//$_GET['BIT_BNK_TRM_TOKEN'];?>"  size="32"/> 
+			</label></br>
+			<label title="принять оплату,  сумма:">сумма:
+				<input type="text" name="bnkSumma" value="10"  size="6"/> 
+			</label>	
+			<button name="action" value="bnkPayment"  type="submit">Оплата по банк.карте</button> 
+			
+			<input name="cnt" type="hidden" value="<?php echo $unic_id;?>"/>
+			</br>
+			<div style="padding:0.5em;">
+				<label title="всплывающее окно из программы БИТ драйвер ККТ">	показывать окно (с логом процесса) из программы БИТ драйвер ККТ
+					<select name="showMode">
+						<option value="4" <?php echo (($_GET["showMode"]=="4") ? "selected":""); ?>>никогда</option>
+						<option value="2" <?php echo (($_GET["showMode"]=="2") ? "selected":""); ?>>когда ошибка</option>
+						<option value="1" <?php echo (($_GET["showMode"]=="1") ? "selected":""); ?> >всегда показывать</option>
+					</select>
+				</label>
+			</div>
 		</form>
 	</div>
 
@@ -151,7 +197,8 @@ $BIT_RECEIPT_WITH_MARKING = [
 		'taxationType_1055'=>1,
 		'receiptType_1054'=>1,
 		'sendToEmail_1008'=>'kkmspb2008@yandex.ru',
-		'printDoc'=>true
+		'printDoc'=>true,
+		'timeZone_1011'=>4
 	)
 	)
 ];
@@ -230,7 +277,7 @@ $BIT_BNK_CARD = [
     "name"=> "1. Оплата по карте",
     "type"=>"bnkCardPayment",
     "data"=>array(
-		"sum"=> 12
+		"sum"=> (($_GET["bnkSumma"]>0) ?  $_GET["bnkSumma"] : 12 )
 	)
   )
 ];
@@ -248,26 +295,25 @@ if( $_GET["KM"] != "" )
 	)
 	];
 	
-	$payload = json_encode( $cmd );
+	$arr = $cmd ;
 }
-
 else if( $_GET["action"]=="kktOpenShift")
-	$payload = json_encode( $BIT_OPEN_SHIFT );
+	$arr = $BIT_OPEN_SHIFT ;
 
 else if( $_GET["action"]=="kktCloseShift")
-	$payload = json_encode( $BIT_CLOSE_SHIFT );
+	$arr = $BIT_CLOSE_SHIFT ;
 
 else if( $_GET["action"]=="kktCashIn")
-	$payload = json_encode( $BIT_INCOM );
+	$arr = $BIT_INCOM ;
 	
 else if( $_GET["action"]=="kktCashOut")
-	$payload = json_encode( $BIT_OUTCOM );
+	$arr = $BIT_OUTCOM ;
 
 else if( $_GET["action"]=="kktReceiptFiscalization")
-	$payload = json_encode( $BIT_RECEIPT );
+	$arr = $BIT_RECEIPT ;
 
 else if( $_GET["action"]=="kktReceiptFiscalization_M")
-	$payload = json_encode( $BIT_RECEIPT_WITH_MARKING );
+	$arr = $BIT_RECEIPT_WITH_MARKING ;
 
 else if( $_GET["action"]=="kktReceiptFiscalization_20")
 {
@@ -275,7 +321,7 @@ else if( $_GET["action"]=="kktReceiptFiscalization_20")
 	
 	$BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] = $BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] + $summ ;
 	
-	$payload = json_encode( $BIT_RECEIPT );
+	$arr =  $BIT_RECEIPT ;
 }
 else if( $_GET["action"]=="kktReceiptFiscalization_40")
 {
@@ -283,7 +329,7 @@ else if( $_GET["action"]=="kktReceiptFiscalization_40")
 	
 	$BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] = $BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] + $summ ;
 	
-	$payload = json_encode( $BIT_RECEIPT );
+	$arr =  $BIT_RECEIPT;
 }
 else if( $_GET["action"]=="kktReceiptFiscalization_80")
 {
@@ -291,21 +337,42 @@ else if( $_GET["action"]=="kktReceiptFiscalization_80")
 	
 	$BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] = $BIT_RECEIPT[0]["data"]["payments"]["cash_1031"] + $summ ;
 	
-	$payload = json_encode( $BIT_RECEIPT );
+	$arr =  $BIT_RECEIPT ;
 }
-
 else if( $_GET["action"]=="kktXReport")
-	$payload = json_encode( $BIT_X_REPORT );
+	$arr =  $BIT_X_REPORT ;
 
 else if( $_GET["action"]=="kktOpenCashDraw")
-	$payload = json_encode( $BIT_OPEN_CASH_DRAW );
+	$arr =  $BIT_OPEN_CASH_DRAW ;
+
+else if( $_GET["action"]=="bnkPayment")
+{
+	$arr =  $BIT_BNK_CARD ;
+}
+else
+{
+	$arr = array();
+}
+
+// добавляем showMode если есть такой параметр
+if( array_key_exists( "showMode" , $_GET ) )
+{
+	foreach( $arr as $kk => $vv)
+	{
+		$arr[$kk]["showMode"] = $_GET["showMode"]; // к каждой команде в пакете добавляем 
+	}
+}
 
 
-if( $payload != "")
+$payload = json_encode( $arr );
+
+$_SESSION["clear_action"]=1;  // очищаем action , чтобы при обновлении страницы не повторить опять это действие
+
+if( count($arr)>0 && $payload != "")
 {	
 	//$payload = json_encode( $BIT_BNK_CARD );
 
-	$ch = curl_init(  'http://109.188.142.134:44736' );
+	$ch = curl_init(  'http://95.161.41.82:44736' );
 
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
 
@@ -317,6 +384,10 @@ if( $payload != "")
 	$BIT_KKT_TOKEN='';
 	if( array_key_exists('BIT_KKT_TOKEN' , $_GET ) )
 		$BIT_KKT_TOKEN= $_GET['BIT_KKT_TOKEN'];
+		
+	$BIT_BNK_TRM_TOKEN='';
+	if( array_key_exists('BIT_BNK_TRM_TOKEN' , $_GET ) )
+		$BIT_BNK_TRM_TOKEN= $_GET['BIT_BNK_TRM_TOKEN'];
 		
 			//'BIT_KKT_TOKEN: 16bba36069e6a91d4919fa64c9236f4e', //мерк
 			//'BIT_KKT_TOKEN: 435cb88c28fc49bd419d58d4b60680b5', // атол 1.05 435cb88c28fc49bd419d58d4b60680b5  
@@ -330,14 +401,18 @@ if( $payload != "")
 				'BIT_ORDER_ID: 122',
 				'BIT_ALLOW_INVALID_MRK_CODES_WITH_CASHIER: true',
 				'BIT_KKT_TOKEN: '.$BIT_KKT_TOKEN, 
+				'BIT_BNK_TRM_TOKEN: '.$BIT_BNK_TRM_TOKEN,
 				'Origin: https://kkmspb.ru'
-			) ;		
-			
+			) ;	
+
+		
 	curl_setopt( $ch, CURLOPT_HTTPHEADER, $headers);
 
 	$result = curl_exec($ch);
 	curl_close($ch);
 
+
+	
 	echo "
 		<hr>
 		<h2>Ответ</h2>
