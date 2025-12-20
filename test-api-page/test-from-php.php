@@ -76,7 +76,7 @@ $unic_id = mt_rand();
 					<select name="showMode">
 						<option value="4" <?php echo (($_GET["showMode"]=="4") ? "selected":""); ?>>никогда</option>
 						<option value="2" <?php echo (($_GET["showMode"]=="2") ? "selected":""); ?>>когда ошибка</option>
-						<option value="1" <?php echo (($_GET["showMode"]=="1") ? "selected":""); ?> >всегда показывать</option>
+						<option value="1" <?php echo (($_GET["showMode"]=="1") ? "selected":""); ?>>всегда показывать</option>
 					</select>
 				</label>
 			</div>			
@@ -85,12 +85,23 @@ $unic_id = mt_rand();
 		<hr>
 		<form method="GET" style="background-color: #a198af; width:49%; padding:1em;">
 			<label title="из лк на kkmspb.ru">токен банк.терминала:
-				<input name="BIT_BNK_TRM_TOKEN" value="<?php echo '625dfdbcd9fb3adb35593a5d994f0604';//$_GET['BIT_BNK_TRM_TOKEN'];?>"  size="32"/> 
+				<input name="BIT_BNK_TRM_TOKEN" value="<?php echo $_GET['BIT_BNK_TRM_TOKEN'];?>"  size="32"/>  
 			</label></br>
 			<label title="принять оплату,  сумма:">сумма:
 				<input type="text" name="bnkSumma" value="10"  size="6"/> 
-			</label>	
-			<button name="action" value="bnkPayment"  type="submit">Оплата по банк.карте</button> 
+			</label>				
+			
+			<button name="action" value="bnkCardPayment"  type="submit">Оплата по банк.карте</button><br>
+			
+			<label title="RRN сылка">RRN ссылка:
+				<input type="text" name="bnkRRN" value=""  size="20"/> 
+			</label>			
+			<button name="action" value="bnkReturn"  type="submit">Возврат</button> <br>
+			
+			<button name="action" value="bnkShortReport"  type="submit">Короткий отчет</button> 
+			<button name="action" value="bnkFullReport"  type="submit">Полный отчет</button> 
+			<button name="action" value="bnkSverkaItogov"  type="submit">Сверка итогов</button> 
+			<button name="action" value="bnkLastOperationResult"  type="submit">Получить результат<BR>последней операции</button> 
 			
 			<input name="cnt" type="hidden" value="<?php echo $unic_id;?>"/>
 			</br>
@@ -99,7 +110,7 @@ $unic_id = mt_rand();
 					<select name="showMode">
 						<option value="4" <?php echo (($_GET["showMode"]=="4") ? "selected":""); ?>>никогда</option>
 						<option value="2" <?php echo (($_GET["showMode"]=="2") ? "selected":""); ?>>когда ошибка</option>
-						<option value="1" <?php echo (($_GET["showMode"]=="1") ? "selected":""); ?> >всегда показывать</option>
+						<option value="1" <?php echo (($_GET["showMode"]=="1") ? "selected":""); ?>>всегда показывать</option>
 					</select>
 				</label>
 			</div>
@@ -272,13 +283,49 @@ $BIT_OPEN_CASH_DRAW = [
 ];
 
 
-$BIT_BNK_CARD = [
+$BIT_BNK_CARD_PAYMENT = [
   array(
-    "name"=> "1. Оплата по карте",
+    "name"=> "Оплата по карте",
     "type"=>"bnkCardPayment",
     "data"=>array(
 		"sum"=> (($_GET["bnkSumma"]>0) ?  $_GET["bnkSumma"] : 12 )
 	)
+  )
+];
+
+$BIT_BNK_CARD_RETURN = [
+  array(
+    "name"=> "Возврат по карте",
+    "type"=>"bnkCardReturn",
+    "data"=>array(
+		"sum"=> (($_GET["bnkSumma"]>0) ?  $_GET["bnkSumma"] : 12 ),
+		"rrn"=> $_GET["bnkRRN"],
+		
+	)
+  )
+];
+$BIT_BNK_CARD_SHORT_REPORT = [
+  array(
+    "name"=> "Короткий отчет",
+    "type"=>"bnkCardShortReport"
+  )
+];
+$BIT_BNK_CARD_FULL_REPORT = [
+  array(
+    "name"=> "Оплата по карте",
+    "type"=>"bnkCardFullReport"
+  )
+];
+$BIT_BNK_CARD_SVERKA_ITOGOV = [
+  array(
+    "name"=> "Сверка итогов",
+    "type"=>"bnkCardSverkaItogov"
+  )
+];
+$BIT_BNK_CARD_LAST_OPERATION_RESULT = [
+  array(
+    "name"=> "запрос результата полседней операции",
+    "type"=>"bnkCardLastOperationResult"
   )
 ];
 
@@ -345,9 +392,29 @@ else if( $_GET["action"]=="kktXReport")
 else if( $_GET["action"]=="kktOpenCashDraw")
 	$arr =  $BIT_OPEN_CASH_DRAW ;
 
-else if( $_GET["action"]=="bnkPayment")
+else if( $_GET["action"]=="bnkCardPayment")
 {
-	$arr =  $BIT_BNK_CARD ;
+	$arr =  $BIT_BNK_CARD_PAYMENT ;
+}
+else if( $_GET["action"]=="bnkShortReport")
+{
+	$arr =  $BIT_BNK_CARD_SHORT_REPORT ;
+}
+else if( $_GET["action"]=="bnkFullReport")
+{
+	$arr =  $BIT_BNK_CARD_FULL_REPORT ;
+}
+else if( $_GET["action"]=="bnkSverkaItogov")
+{
+	$arr =  $BIT_BNK_CARD_SVERKA_ITOGOV ;
+}
+else if( $_GET["action"]=="bnkLastOperationResult")
+{
+	$arr =  $BIT_BNK_CARD_LAST_OPERATION_RESULT ;
+}
+else if( $_GET["action"]=="bnkReturn")
+{
+	$arr =  $BIT_BNK_CARD_RETURN ;
 }
 else
 {
