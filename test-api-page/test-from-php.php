@@ -86,7 +86,12 @@ $unic_id = mt_rand();
 		<form method="GET" style="background-color: #a198af; width:49%; padding:1em;">
 			<label title="из лк на kkmspb.ru">токен банк.терминала:
 				<input name="BIT_BNK_TRM_TOKEN" value="<?php echo $_GET['BIT_BNK_TRM_TOKEN'];?>"  size="32"/>  
-			</label></br>
+			</label>
+			
+			<button name="action" value="bnkConnectTest" type="submit">Проверить связь</button> <br>
+			
+			
+			
 			<label title="принять оплату,  сумма:">сумма:
 				<input type="text" name="bnkSumma" value="10"  size="6"/> 
 			</label>				
@@ -316,6 +321,12 @@ $BIT_BNK_CARD_FULL_REPORT = [
     "type"=>"bnkCardFullReport"
   )
 ];
+$BIT_BNK_CONNECT_TEST = [
+  array(
+    "name"=> "Проверка связи",
+    "type"=>"bnkConnectTest"
+  )
+];
 $BIT_BNK_CARD_SVERKA_ITOGOV = [
   array(
     "name"=> "Сверка итогов",
@@ -403,6 +414,10 @@ else if( $_GET["action"]=="bnkShortReport")
 else if( $_GET["action"]=="bnkFullReport")
 {
 	$arr =  $BIT_BNK_CARD_FULL_REPORT ;
+}
+else if( $_GET["action"]=="bnkConnectTest")
+{
+	$arr =  $BIT_BNK_CONNECT_TEST;
 }
 else if( $_GET["action"]=="bnkSverkaItogov")
 {
