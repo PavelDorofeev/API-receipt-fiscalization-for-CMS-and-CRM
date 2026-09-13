@@ -71,6 +71,44 @@ $unic_id = mt_rand();
 			</label>		
 			<button name="action" value="kktCheckKM" type="submit">Отправить</button>
 			</br>
+			<button name="action" value="kktConnectTest" type="submit">Проверить связь</button> 
+			
+			<label title="куда соединяемся">ip:
+				<input name="ip" value="<?php echo $_GET['ip'];?>" type="text" placeholder="ip пк где установлена программа (или localhost как вариант)"/> 
+			</label>
+			
+			<select id="port" name="port">
+				<option value="44736" <?php echo (($_GET["port"]=="44736") ? "selected":""); ?>>БИТ драйвер ККТ 44736</option>
+				<option value="44915" <?php echo (($_GET["port"]=="44915") ? "selected":""); ?>>БИТ тест ФН 44915</option>
+				<option <?php echo (($_GET["port"]=="") ? "selected":""); ?>>выберите порт</option>
+			</select>
+			
+			<?php 
+			$date = date("Y-m-d");
+			$time = date("H:m");
+			$dt = $date.'T'.$time;
+			//echo "==date===".$dt; // YYYY-MM-DDTHH:MM
+			if( array_key_exists( 'unixTime' , $_GET) )
+			{
+				$dt = $_GET["unixTime"];
+			}
+			
+			if ( $_GET['port'] == 44915 )
+			{
+				/*
+				<label title="можно установить дату время вручную">дата время:
+					<input id="unixTime" name="unixTime" value="'.time().'" type="text" placeholder="можно установить дату время вручную (число unixTime)"/> 
+				</label>
+				*/
+				echo '<br>
+				<label title="можно задать время и дату пробиваемого чека вручную (для ФН), но будьте внимательны">передавать дату/время чека вручную:
+					<input id="unixTimeSendOn" name="unixTimeSendOn" type="checkbox" '.((array_key_exists( 'unixTimeSendOn' , $_GET)) ? "checked":"").'/> 
+					<input  type="datetime-local" name="unixTime" placeholder="Дата начала" value='.$dt.' "/>
+				</label>
+				';
+			}
+			?>
+			
 			<div style="padding:0.5em;">
 				<label title="всплывающее окно из программы БИТ драйвер ККТ">	показывать окно (с логом процесса) из программы БИТ драйвер ККТ
 					<select name="showMode">
@@ -125,12 +163,7 @@ $unic_id = mt_rand();
 <?php
 
 //phpinfo();
-
-$BIT_RECEIPT = [ 
-	array(
-	'name'=>'2. Фискализируем чек',
-	'type'=>'kktReceiptFiscalization',
-	'data'=>array(
+/*
 		'1261'=>[
 		array(	
 			'a_1262'=>'001',
@@ -139,6 +172,13 @@ $BIT_RECEIPT = [
 			'd_1265'=>'jkersgdhfk8349544'			
 		)
 		],
+		*/
+
+$BIT_RECEIPT = [ 
+	array(
+	'name'=>'2. Фискализируем чек',
+	'type'=>'kktReceiptFiscalization',
+	'data'=>array(
 		'1059'=>[
 			array(
 				'productName_1030'=>'Отладка программы ',
@@ -217,6 +257,13 @@ $BIT_RECEIPT_WITH_MARKING = [
 		'timeZone_1011'=>4
 	)
 	)
+];
+
+$BIT_CONNECT_TEST = [
+  array(
+    "name"=> "Проверка связи",
+    "type"=>"kktConnectTest"
+  )
 ];
 
 $BIT_CLOSE_SHIFT = [ 
@@ -368,7 +415,9 @@ else if( $_GET["action"]=="kktCashOut")
 	$arr = $BIT_OUTCOM ;
 
 else if( $_GET["action"]=="kktReceiptFiscalization")
+{
 	$arr = $BIT_RECEIPT ;
+}
 
 else if( $_GET["action"]=="kktReceiptFiscalization_M")
 	$arr = $BIT_RECEIPT_WITH_MARKING ;
@@ -419,6 +468,10 @@ else if( $_GET["action"]=="bnkConnectTest")
 {
 	$arr =  $BIT_BNK_CONNECT_TEST;
 }
+else if( $_GET["action"]=="kktConnectTest")
+{
+	$arr =  $BIT_CONNECT_TEST;
+}
 else if( $_GET["action"]=="bnkSverkaItogov")
 {
 	$arr =  $BIT_BNK_CARD_SVERKA_ITOGOV ;
@@ -442,6 +495,11 @@ if( array_key_exists( "showMode" , $_GET ) )
 	foreach( $arr as $kk => $vv)
 	{
 		$arr[$kk]["showMode"] = $_GET["showMode"]; // к каждой команде в пакете добавляем 
+		
+		if( array_key_exists("unixTimeSendOn",$_GET) && array_key_exists( "unixTime" , $_GET ) )
+		{
+			$arr[$kk]["unixTime"] = strtotime( $_GET["unixTime"] ); // к каждой команде в пакете добавляем 
+		}
 	}
 }
 
@@ -454,7 +512,14 @@ if( count($arr)>0 && $payload != "")
 {	
 	//$payload = json_encode( $BIT_BNK_CARD );
 
-	$ch = curl_init(  'http://95.161.41.82:44736' );
+	$port = $_GET["port"];
+	$ip = $_GET["ip"];
+
+	echo 'http://'.$ip;
+	echo ' port:'.$port;
+	
+	//$ch = curl_init(  'http://95.161.41.82:' . $port );
+	$ch = curl_init(  "http://" . $ip. ":" . $port );
 
 	curl_setopt( $ch, CURLOPT_POSTFIELDS, $payload );
 
